@@ -105,24 +105,28 @@ export default function CrisisModal({ scenario }: CrisisModalProps) {
       {/* Mini Loading Overlay during evaluation */}
       {isEvaluating && <MiniLoadingOverlay />}
 
-      <div className="min-h-screen-gradient bg-gradient-blue-white text-slate-900 px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16 flex flex-col items-center justify-start relative">
+      <div className="min-h-screen-gradient bg-gradient-blue-white text-slate-900 px-4 sm:px-6 lg:px-8 py-6 sm:py-10 lg:py-12 flex flex-col items-center justify-start relative overflow-hidden">
+        {/* Animated background elements */}
+        <div className="absolute top-40 left-10 w-80 h-80 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-15 animate-float animate-float"></div>
+        <div className="absolute bottom-20 right-10 w-80 h-80 bg-blue-300 rounded-full mix-blend-multiply filter blur-3xl opacity-15 animate-float-slow animation-delay-2000"></div>
+        
         {/* Content Container - Fully Centered and Scrollable */}
-        <div className="w-full max-w-2xl flex flex-col items-center justify-center gap-8 sm:gap-12">
+        <div className="w-full max-w-2xl flex flex-col items-center justify-center gap-6 sm:gap-8 relative z-10">
           {/* Crisis Section - Centered */}
-          <div className="w-full text-center">
+          <div className="w-full text-center animate-slideDown">
             {/* Crisis Heading */}
-            <div className="mb-6 sm:mb-8">
-              <h2 className="text-5xl sm:text-6xl lg:text-7xl font-black mb-4 sm:mb-6 bg-gradient-to-r from-blue-600 to-blue-500 bg-clip-text text-transparent">
+            <div className="mb-4 sm:mb-6">
+              <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black mb-2 sm:mb-3 bg-gradient-to-r from-blue-600 to-blue-500 bg-clip-text text-transparent animate-float">
                 CRISIS
               </h2>
-              <p className="text-lg sm:text-xl lg:text-2xl font-medium text-slate-600">
+              <p className="text-base sm:text-lg lg:text-xl font-medium text-slate-600">
                 Make your critical decision
               </p>
             </div>
 
             {/* Crisis Text Box - Premium styling */}
-            <div className="text-center mb-8 sm:mb-10">
-              <p className="text-lg sm:text-xl lg:text-2xl font-semibold leading-relaxed text-slate-800 bg-white/80 backdrop-blur-lg border-1.5 border-blue-200 rounded-3xl p-6 sm:p-8 lg:p-10 shadow-sm hover:shadow-md hover:border-blue-300 transition-all duration-300">
+            <div className="text-center mb-6 sm:mb-8 animate-slideUp">
+              <p className="text-base sm:text-lg lg:text-xl font-semibold leading-snug sm:leading-relaxed text-slate-800 bg-white/80 backdrop-blur-lg border-1.5 border-blue-200 rounded-3xl p-5 sm:p-7 lg:p-8 shadow-sm hover:shadow-md hover:border-blue-300 transition-all duration-300 break-words">
                 {scenario.crisisText}
               </p>
             </div>
@@ -131,23 +135,24 @@ export default function CrisisModal({ scenario }: CrisisModalProps) {
             {scenario.questionType === "multiple-choice" &&
               scenario.actionButtons &&
               !showDefenseTextbox && (
-              <div className="w-full space-y-3 sm:space-y-4">
-                <p className="text-xs sm:text-sm font-bold text-slate-600 uppercase tracking-widest text-center mb-4 sm:mb-6">
+              <div className="w-full space-y-2 sm:space-y-3">
+                <p className="text-xs sm:text-sm font-bold text-slate-600 uppercase tracking-widest text-center mb-3 sm:mb-4">
                   Select Your Response:
                 </p>
-                {scenario.actionButtons.map((button) => (
+                {scenario.actionButtons.map((button, idx) => (
                   <button
                     key={button.id}
                     onClick={() => handleActionClick(button.id)}
                     disabled={isLoading}
-                    className={`action-button w-full transition-all duration-300 ${
+                    className={`action-button w-full transition-all duration-300 animate-slideUp ${
                       selectedActionButton === button.id ? "selected ring-2 ring-blue-500 scale-105" : "hover:scale-102"
                     } ${isLoading ? "opacity-50 cursor-not-allowed" : "hover:shadow-lg"}`}
+                    style={{ animationDelay: `${idx * 0.1}s` }}
                   >
-                    <span className="action-button-index text-lg sm:text-xl font-bold">
+                    <span className="action-button-index text-base sm:text-lg font-bold">
                       {String.fromCharCode(65 + (button.order - 1))}
                     </span>
-                    <span className="action-button-label flex-1 text-left text-sm sm:text-base">{button.label}</span>
+                    <span className="action-button-label flex-1 text-left text-sm sm:text-base break-words">{button.label}</span>
                     <span className="text-xs text-slate-500 hidden sm:inline">Click to select</span>
                   </button>
                 ))}
