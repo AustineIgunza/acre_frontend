@@ -5,14 +5,22 @@ import {
   CombatStore,
   BattleState,
   CombatEncounter,
-  CombatBoss,
+  EXAMPLE_COMBAT_BOSS,
 } from "@/types/combat";
+import { MOCK_TEST_BOSS, generateMockBattleLog } from "@/utils/mockTestData";
 
 /**
  * ACRE Combat Store - Zustand
  * Manages all battle state across the app
- * Now connected to the backend AI for real encounter generation
+ * 
+ * TEST MODE:
+ * A = Correct answer (full damage to boss, no damage to player)
+ * C = Close/Partial (moderate damage to boss, small damage to player)
+ * B = Wrong answer (minimal damage to boss, heavy damage to player)
  */
+
+// Enable test mode by default - shows Cell Biology challenges
+const TEST_MODE_ENABLED = true;
 
 export const useCombatStore = create<CombatStore>((set, get) => ({
   // Initial state
@@ -21,73 +29,23 @@ export const useCombatStore = create<CombatStore>((set, get) => ({
   is_loading: false,
   error: null,
 
-  // Start a new battle — calls backend AI to generate encounters
+  // Start a new battle
   startBattle: async (payload: { text?: string; url?: string; file?: File }, sourceTitle?: string) => {
     set({ is_loading: true, error: null });
 
     try {
-      // Get auth token from supabase (read from localStorage to avoid importing arceStore)
-      let authToken: string | null = null;
-      try {
-        const storageKey = Object.keys(localStorage).find(k => k.startsWith("sb-") && k.endsWith("-auth-token"));
-        if (storageKey) {
-          const authData = JSON.parse(localStorage.getItem(storageKey) || "{}");
-          authToken = authData?.access_token || null;
-        }
-      } catch { /* ignore */ }
-
-      const formData = new FormData();
-      if (payload.text) formData.append("text_material", payload.text);
-      if (payload.url) formData.append("url", payload.url);
-      if (payload.file) formData.append("file", payload.file);
-      if (sourceTitle) formData.append("title", sourceTitle);
-
-      // Call the NEW dedicated battle scenario endpoint
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/generate-battle-scenarios`, {
-        method: 'POST',
-        headers: {
-          ...(authToken ? { 'Authorization': `Bearer ${authToken}` } : {}),
-        },
-        body: formData,
-      });
-
-      if (!res.ok) {
-        const errData = await res.json();
-        throw new Error(errData.details || errData.error || "Failed to generate battle scenarios.");
-      }
+      // Extract source content from payload
+      let sourceContent = payload.text || "";
       
-      const data = await res.json();
+      // Mock API call for Day 1 - will connect to real backend on Day 2
+      await new Promise((resolve) => setTimeout(resolve, 800));
 
-      // Map AI scenarios with 4 options (A, B, C, D)
-      const encounters: CombatEncounter[] = data.scenarios.map((s: any, index: number) => {
-        const optMap: Record<string, string> = {};
-        s.options.forEach((o: any) => {
-          optMap[o.id] = o.text || o.action || "Option";
-        });
+      // Use test mode boss or example boss
+      const boss = TEST_MODE_ENABLED ? MOCK_TEST_BOSS : EXAMPLE_COMBAT_BOSS;
 
-        return {
-          id: index + 1,
-          scenario: `${s.title}\n\n${s.context}\n${s.question}`,
-          options: {
-            A: optMap["A"] || "Option A",
-            B: optMap["B"] || "Option B",
-            C: optMap["C"] || "Option C",
-            D: optMap["D"] || "Option D",
-          },
-          correct_option: (s.correct_option || "A") as "A" | "B" | "C" | "D",
-          win_feedback: `Masterful! Your thermal logic solved the crisis in "${s.title}".`,
-          loss_feedback: `Critical Insight Missing: ${s.title}. ${s.context}`,
-        };
-      });
-
-      const boss: CombatBoss = {
-        boss_name: sourceTitle || "The Knowledge Guardian",
-        intro_narrative: `You are about to face a boss forged from your study material. It has ${encounters.length} encounters designed to test your deep understanding. Prove your mastery!`,
-        encounters,
-      };
-
-      const battleState: BattleState = {
-        boss,
+      // Generate mock battle state
+      const mockBattleState: BattleState = {
+        boss: boss,
         current_encounter_index: 0,
         player_hp: 100,
         boss_hp: 100,
@@ -99,11 +57,16 @@ export const useCombatStore = create<CombatStore>((set, get) => ({
       };
 
       const sessionId = `battle-${Date.now()}`;
-      localStorage.setItem(`acre-battle-${sessionId}`, JSON.stringify(battleState));
+
+      // Save to localStorage
+      localStorage.setItem(
+        `acre-battle-${sessionId}`,
+        JSON.stringify(mockBattleState)
+      );
 
       set({
         battle_session_id: sessionId,
-        battle_state: battleState,
+        battle_state: mockBattleState,
         is_loading: false,
       });
     } catch (error) {
@@ -122,7 +85,7 @@ export const useCombatStore = create<CombatStore>((set, get) => ({
     set({ is_loading: true, error: null });
 
     try {
-      // Evaluate locally since the encounter already has the correct_option
+      // Mock API call - will connect to real backend on Day 2
       await new Promise((resolve) => setTimeout(resolve, 600));
 
       const encounter = state.battle_state.boss.encounters.find(
@@ -130,22 +93,43 @@ export const useCombatStore = create<CombatStore>((set, get) => ({
       );
       if (!encounter) throw new Error("Encounter not found");
 
-      const isCorrect = choice === encounter.correct_option;
-      
-      // Scale damage so that a perfect run always kills the boss (total 100 dmg)
-      const numEncounters = state.battle_state.boss.encounters.length;
-      const damageDealt = isCorrect ? Math.ceil(100 / numEncounters) : 0;
-      const damageTaken = isCorrect ? 0 : 20;
+      // Test mode scoring:
+      // A = Correct (full mastery)
+      // C = Close (partial understanding)
+      // B = Wrong (needs review)
+      let isCorrect: boolean;
+      let damageDealt: number;
+      let damageTaken: number;
 
-      const newPlayerHp = Math.max(0, state.battle_state.player_hp - damageTaken);
-      const newBossHp = Math.max(0, state.battle_state.boss_hp - damageDealt);
-      const newIndex = state.battle_state.current_encounter_index + 1;
+      if (choice === "A") {
+        // Correct answer
+        isCorrect = true;
+        damageDealt = 25;
+        damageTaken = 0;
+      } else if (choice === "C") {
+        // Close/partial answer
+        isCorrect = true; // Counts as success for progression
+        damageDealt = 15;
+        damageTaken = 5;
+      } else if (choice === "B") {
+        // Wrong answer
+        isCorrect = false;
+        damageDealt = 5;
+        damageTaken = 20;
+      } else {
+        // Other choices treated as wrong
+        isCorrect = false;
+        damageDealt = 5;
+        damageTaken = 15;
+      }
 
+      // Update battle state
       const newBattleState: BattleState = {
         ...state.battle_state,
-        player_hp: newPlayerHp,
-        boss_hp: newBossHp,
-        current_encounter_index: newIndex,
+        player_hp: Math.max(0, state.battle_state.player_hp - damageTaken),
+        boss_hp: Math.max(0, state.battle_state.boss_hp - damageDealt),
+        current_encounter_index:
+          state.battle_state.current_encounter_index + 1,
         battle_log: [
           ...state.battle_state.battle_log,
           {
@@ -160,11 +144,14 @@ export const useCombatStore = create<CombatStore>((set, get) => ({
               : encounter.loss_feedback,
           },
         ],
-        // Victory if boss HP hits 0 OR if all encounters are finished and player survived
-        is_victory: newBossHp <= 0 || (newIndex >= numEncounters && newPlayerHp > 0),
-        is_defeat: newPlayerHp <= 0,
+        is_victory:
+          state.battle_state.boss_hp - damageDealt <= 0 ||
+          state.battle_state.current_encounter_index >=
+            state.battle_state.boss.encounters.length,
+        is_defeat: state.battle_state.player_hp - damageTaken <= 0,
       };
 
+      // Save to localStorage
       if (state.battle_session_id) {
         localStorage.setItem(
           `acre-battle-${state.battle_session_id}`,
@@ -194,5 +181,43 @@ export const useCombatStore = create<CombatStore>((set, get) => ({
     });
   },
 
+  // Derived state: current encounter
+  get current_encounter(): CombatEncounter | null {
+    const state = get();
+    if (!state.battle_state) return null;
+    return (
+      state.battle_state.boss.encounters[
+        state.battle_state.current_encounter_index
+      ] || null
+    );
+  },
 
+  // Derived state: is battle active
+  get is_battle_active(): boolean {
+    const state = get();
+    return !!(state.battle_state &&
+      !state.battle_state.is_victory &&
+      !state.battle_state.is_defeat);
+  },
+
+  // Derived state: player HP percentage
+  get player_hp_percent(): number {
+    const state = get();
+    if (!state.battle_state) return 100;
+    return (
+      (state.battle_state.player_hp /
+        state.battle_state.max_player_hp) *
+      100
+    );
+  },
+
+  // Derived state: boss HP percentage
+  get boss_hp_percent(): number {
+    const state = get();
+    if (!state.battle_state) return 100;
+    return (
+      (state.battle_state.boss_hp / state.battle_state.max_boss_hp) *
+      100
+    );
+  },
 }));

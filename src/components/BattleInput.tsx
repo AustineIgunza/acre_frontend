@@ -15,9 +15,9 @@ export default function BattleInput() {
       return;
     }
 
-    const contentToSubmit: string = content.trim();
+    const payload = { text: content.trim() };
     const titleToSubmit: string = title.trim() || "Untitled Challenge";
-    (startBattle as any)(contentToSubmit, titleToSubmit);
+    startBattle(payload, titleToSubmit);
   };
 
   return (

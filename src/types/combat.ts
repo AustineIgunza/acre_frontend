@@ -141,5 +141,9 @@ export interface CombatStore {
   ) => Promise<void>;
   resetBattle: () => void;
 
-
+  // Derived
+  current_encounter: CombatEncounter | null;
+  is_battle_active: boolean;
+  player_hp_percent: number;
+  boss_hp_percent: number;
 }
