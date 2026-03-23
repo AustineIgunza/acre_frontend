@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useCombatStore } from "@/store/combatStore";
 import { CombatEncounter } from "@/types/combat";
+import Toast from "./Toast";
 
 interface EncounterCardProps {
   encounter: CombatEncounter;
@@ -13,25 +14,26 @@ export default function EncounterCard({
   encounter,
   is_loading,
 }: EncounterCardProps) {
-  const [feedback, setFeedback] = useState<{
-    choice: string;
+  const [toastVisible, setToastVisible] = useState(false);
+  const [toastData, setToastData] = useState<{
     message: string;
     isCorrect: boolean;
   } | null>(null);
+  const [selectedChoice, setSelectedChoice] = useState<"A" | "B" | "C" | "D" | null>(null);
   const { submitAnswer } = useCombatStore();
 
   const handleChoice = async (choice: "A" | "B" | "C" | "D") => {
     const isCorrect = choice === encounter.correct_option;
-    setFeedback({
-      choice,
-      message: isCorrect ? encounter.win_feedback : encounter.loss_feedback,
-      isCorrect,
-    });
+    const message = isCorrect ? encounter.win_feedback : encounter.loss_feedback;
+    
+    setSelectedChoice(choice);
+    setToastData({ message, isCorrect });
+    setToastVisible(true);
 
     // Wait 2 seconds then submit
     setTimeout(() => {
       submitAnswer(encounter.id, choice);
-      setFeedback(null);
+      setSelectedChoice(null);
     }, 2000);
   };
 
@@ -71,31 +73,31 @@ export default function EncounterCard({
             <button
               key={key}
               onClick={() => handleChoice(key)}
-              disabled={is_loading || !!feedback}
+              disabled={is_loading || !!selectedChoice}
               className="w-full p-2 sm:p-3 text-left rounded-xl border-2 transition-all"
               style={{
-                backgroundColor: feedback?.choice === key 
-                  ? feedback.isCorrect 
+                backgroundColor: selectedChoice === key 
+                  ? toastData?.isCorrect 
                     ? "var(--success-soft)" 
                     : "var(--error-soft)"
                   : "var(--surface-alt)",
-                borderColor: feedback?.choice === key 
-                  ? feedback.isCorrect 
+                borderColor: selectedChoice === key 
+                  ? toastData?.isCorrect 
                     ? "var(--success)" 
                     : "var(--error)"
                   : "var(--border)",
-                color: feedback?.choice === key 
-                  ? feedback.isCorrect 
+                color: selectedChoice === key 
+                  ? toastData?.isCorrect 
                     ? "var(--success)" 
                     : "var(--error)"
                   : "var(--text-secondary)",
-                cursor: is_loading || !!feedback ? "not-allowed" : "pointer",
-                opacity: is_loading || !!feedback ? 0.6 : 1,
+                cursor: is_loading || !!selectedChoice ? "not-allowed" : "pointer",
+                opacity: is_loading || !!selectedChoice ? 0.6 : 1,
                 animation: `slideInFromLeft ${0.3 + index * 0.08}s cubic-bezier(0.34, 1.56, 0.64, 1)`,
                 transform: "translateZ(0)"
               }}
               onMouseEnter={(e) => {
-                if (!is_loading && !feedback) {
+                if (!is_loading && !selectedChoice) {
                   e.currentTarget.style.borderColor = "var(--primary)";
                   e.currentTarget.style.transform = "translateY(-2px)";
                 }
@@ -111,24 +113,6 @@ export default function EncounterCard({
           ))}
         </div>
 
-        {/* Feedback */}
-        {feedback && (
-          <div
-            className="p-3 sm:p-4 rounded-xl border-2"
-            style={{
-              backgroundColor: feedback.isCorrect ? "var(--success-soft)" : "var(--error-soft)",
-              borderColor: feedback.isCorrect ? "var(--success)" : "var(--error)",
-              color: feedback.isCorrect ? "var(--success)" : "var(--error)",
-              animation: "popupEnter 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)"
-            }}
-          >
-            <p className="font-bold mb-1 text-xs sm:text-sm">
-              {feedback.isCorrect ? "✅ CORRECT!" : "❌ INCORRECT"}
-            </p>
-            <p className="text-xs leading-relaxed">{feedback.message}</p>
-          </div>
-        )}
-
         {/* Loading State */}
         {is_loading && (
           <div className="text-center" style={{ color: "var(--text-muted)" }}>
@@ -138,6 +122,16 @@ export default function EncounterCard({
           </div>
         )}
       </div>
+
+      {/* Toast Notification */}
+      {toastData && (
+        <Toast 
+          message={toastData.message}
+          isCorrect={toastData.isCorrect}
+          isVisible={toastVisible}
+          onDismiss={() => setToastVisible(false)}
+        />
+      )}
     </div>
   );
 }

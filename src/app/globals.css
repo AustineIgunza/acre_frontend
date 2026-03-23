@@ -188,6 +188,30 @@ body {
   }
 }
 
+/* Toast notification entrance from top-right */
+@keyframes toastEnter {
+  from {
+    opacity: 0;
+    transform: translateX(400px) translateY(-20px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) translateY(0) scale(1);
+  }
+}
+
+/* Toast notification exit - slow fade and slide away */
+@keyframes toastExit {
+  from {
+    opacity: 1;
+    transform: translateX(0) translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(400px) translateY(-20px) scale(0.9);
+  }
+}
+
 /* Smooth interaction states */
 button, [role="button"], input, textarea, select {
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
