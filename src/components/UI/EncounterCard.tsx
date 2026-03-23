@@ -20,7 +20,6 @@ export default function EncounterCard({
     isCorrect: boolean;
   } | null>(null);
   const [selectedChoice, setSelectedChoice] = useState<"A" | "B" | "C" | "D" | null>(null);
-  const [hoveredOption, setHoveredOption] = useState<"A" | "B" | "C" | "D" | null>(null);
   const { submitAnswer } = useCombatStore();
 
   const handleChoice = async (choice: "A" | "B" | "C" | "D") => {
@@ -102,40 +101,10 @@ export default function EncounterCard({
                   whiteSpace: "nowrap",
                   pointerEvents: is_loading || !!selectedChoice ? "none" : "auto"
                 }}
-                onMouseEnter={() => !is_loading && !selectedChoice && setHoveredOption(key)}
-                onMouseLeave={() => setHoveredOption(null)}
-                onTouchStart={() => !is_loading && !selectedChoice && setHoveredOption(key)}
-                onTouchEnd={() => setHoveredOption(null)}
               >
                 <span className="font-bold mr-2">{key}.</span>
                 <span className="text-xs sm:text-sm">{label}</span>
               </button>
-
-              {/* Hover Tooltip - Shows full text on smaller screens */}
-              {hoveredOption === key && !is_loading && !selectedChoice && (
-                <div
-                  style={{
-                    position: "fixed",
-                    backgroundColor: "var(--surface)",
-                    border: "2px solid var(--primary)",
-                    borderRadius: "12px",
-                    padding: "12px",
-                    maxWidth: "min(280px, 85vw)",
-                    zIndex: 10001,
-                    boxShadow: "0 8px 24px rgba(0,0,0,0.15)",
-                    animation: "popupEnter 0.2s cubic-bezier(0.34, 1.56, 0.64, 1)",
-                    pointerEvents: "none",
-                    top: "50%",
-                    left: "50%",
-                    transform: "translate(-50%, -50%)",
-                  }}
-                >
-                  <p className="text-xs sm:text-sm" style={{ color: "var(--text-secondary)" }}>
-                    <span className="font-bold" style={{ color: "var(--primary)" }}>{key}. </span>
-                    {label}
-                  </p>
-                </div>
-              )}
             </div>
           ))}
         </div>
