@@ -5,6 +5,7 @@ import { useCombatStore } from "@/store/combatStore";
 import BattleInput from "@/components/BattleInput";
 import BattleArena from "@/components/BattleArena";
 import BattleResult from "@/components/BattleResult";
+import GameModeToggle from "@/components/GameModeToggle";
 
 export default function Home() {
   const { battle_state, resetBattle } = useCombatStore();
@@ -40,6 +41,9 @@ export default function Home() {
       </div>
 
       <div className="relative container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-12 max-h-screen overflow-y-auto">
+        {/* Mode Toggle */}
+        <GameModeToggle />
+
         {/* Header */}
         <div className="mb-8 sm:mb-12 text-center" style={{ animation: "smoothFadeIn 0.8s ease-out" }}>
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-3 tracking-tight" style={{ color: "var(--foreground)" }}>

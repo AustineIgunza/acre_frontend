@@ -1,6 +1,8 @@
 "use client";
 
 import { useCombatStore } from "@/store/combatStore";
+import HeatmapGrid from "./HeatmapGrid";
+import SaveProgress from "./SaveProgress";
 
 interface BattleResultProps {
   onReset: () => void;
@@ -102,7 +104,7 @@ export default function BattleResult({ onReset }: BattleResultProps) {
         </p>
       </div>
 
-      {/* 3x3 Heatmap Grid */}
+      {/* 3x3 Heatmap Grid with Color Gradients */}
       <div 
         className="rounded-2xl border p-6 sm:p-8"
         style={{
@@ -111,33 +113,15 @@ export default function BattleResult({ onReset }: BattleResultProps) {
           animation: "smoothFadeIn 0.7s ease-out"
         }}
       >
-        <h2 className="text-lg sm:text-xl font-bold mb-4" style={{ color: "var(--text-secondary)" }}>
-          Performance Heatmap
-        </h2>
-        
-        <div className="grid gap-2 sm:gap-3" style={{ gridTemplateColumns: `repeat(${cellsPerRow}, 1fr)` }}>
-          {gridCells.map((cell) => (
-            <div
-              key={cell.id}
-              className="aspect-square rounded-lg border-2 flex items-center justify-center font-bold text-lg sm:text-xl transition-all cursor-default"
-              style={{
-                backgroundColor: cell.isCorrect ? "var(--success-soft)" : "var(--error-soft)",
-                borderColor: cell.isCorrect ? "var(--success)" : "var(--error)",
-                color: cell.isCorrect ? "var(--success)" : "var(--error)",
-                animation: `smoothScale ${0.3 + cell.id * 0.05}s ease-out`,
-                transform: "translateZ(0)"
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = "scale(1.05)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = "scale(1)";
-              }}
-            >
-              {cell.isCorrect ? "✓" : "✕"}
-            </div>
-          ))}
-        </div>
+        <HeatmapGrid 
+          results={battle_state.battle_log.map(log => log.was_correct ? "correct" : "wrong")}
+          masteryScores={battle_state.battle_log.map((log, idx) => {
+            // Calculate mastery score based on performance
+            if (log.was_correct) return 85 + Math.random() * 15; // 85-100
+            if (log.damage_dealt > 10) return 50 + Math.random() * 16; // 50-66 (close/partial)
+            return 20 + Math.random() * 13; // 20-33 (wrong)
+          })}
+        />
       </div>
 
       {/* Battle Summary */}
@@ -210,6 +194,9 @@ export default function BattleResult({ onReset }: BattleResultProps) {
           ← New Challenge
         </button>
       </div>
+
+      {/* Save Progress & Sign In */}
+      <SaveProgress playerScore={correctAnswers} totalQuestions={totalEncounters} canSave={true} />
 
       {/* Tips */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">

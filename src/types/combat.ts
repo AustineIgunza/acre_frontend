@@ -132,6 +132,7 @@ export interface CombatStore {
   battle_state: BattleState | null;
   is_loading: boolean;
   error: string | null;
+  game_mode: "test" | "live";
 
   // Actions
   startBattle: (payload: { text?: string; url?: string; file?: File }, sourceTitle?: string) => Promise<void>;
@@ -140,6 +141,7 @@ export interface CombatStore {
     choice: "A" | "B" | "C" | "D"
   ) => Promise<void>;
   resetBattle: () => void;
+  setGameMode: (mode: "test" | "live") => void;
 
   // Derived
   current_encounter: CombatEncounter | null;

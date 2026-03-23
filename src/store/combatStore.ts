@@ -17,10 +17,12 @@ import { MOCK_TEST_BOSS, generateMockBattleLog } from "@/utils/mockTestData";
  * A = Correct answer (full damage to boss, no damage to player)
  * C = Close/Partial (moderate damage to boss, small damage to player)
  * B = Wrong answer (minimal damage to boss, heavy damage to player)
+ * 
+ * HEATMAP: Blue (Hold/0-33%) → Orange (Warm/34-66%) → Red (Hot/67-100%)
  */
 
-// Enable test mode by default - shows Cell Biology challenges
-const TEST_MODE_ENABLED = true;
+// Mode toggle: test or live
+const GAME_MODE = "test"; // "test" or "live"
 
 export const useCombatStore = create<CombatStore>((set, get) => ({
   // Initial state
@@ -28,6 +30,7 @@ export const useCombatStore = create<CombatStore>((set, get) => ({
   battle_state: null,
   is_loading: false,
   error: null,
+  game_mode: GAME_MODE,
 
   // Start a new battle
   startBattle: async (payload: { text?: string; url?: string; file?: File }, sourceTitle?: string) => {
@@ -41,7 +44,7 @@ export const useCombatStore = create<CombatStore>((set, get) => ({
       await new Promise((resolve) => setTimeout(resolve, 800));
 
       // Use test mode boss or example boss
-      const boss = TEST_MODE_ENABLED ? MOCK_TEST_BOSS : EXAMPLE_COMBAT_BOSS;
+      const boss = GAME_MODE === "test" ? MOCK_TEST_BOSS : EXAMPLE_COMBAT_BOSS;
 
       // Generate mock battle state
       const mockBattleState: BattleState = {
@@ -219,5 +222,10 @@ export const useCombatStore = create<CombatStore>((set, get) => ({
       (state.battle_state.boss_hp / state.battle_state.max_boss_hp) *
       100
     );
+  },
+
+  // Set game mode (test or live)
+  setGameMode: (mode: "test" | "live") => {
+    set({ game_mode: mode });
   },
 }));
