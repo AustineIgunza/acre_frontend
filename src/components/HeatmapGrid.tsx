@@ -15,8 +15,8 @@ interface HeatmapGridProps {
 
 /**
  * Heatmap gradient colors based on mastery level (0-100)
- * 7-band gradient: Light Orange → Deep Orange → Dark Orange → Light Red → Dark Red → Darker Red → Searing Red
- * 0-10: Light Orange | 10-30: Deep Orange | 30-50: Dark Orange | 50-70: Light Red | 70-80: Darker Red | 80-90: Dark Red | 90-100: Searing Red
+ * 7-band gradient: Light Orange → Deep Orange → Dark Orange → Light Red → Dark Red (50-70) → Darker Red → Bright Searing Red (90-100)
+ * 0-10: Light Orange | 10-30: Deep Orange | 30-50: Dark Orange | 50-70: Dark Red | 70-80: Darker Red | 80-90: Even Darker Red | 90-100: Bright Searing Red
  */
 export function getMasteryColor(score: number): string {
   if (score <= 10) {
@@ -32,21 +32,21 @@ export function getMasteryColor(score: number): string {
     const intensity = (score - 30) / 20;
     return `hsl(24, 100%, ${68 - intensity * 15}%)`;
   } else if (score <= 70) {
-    // Light Red (50-70)
+    // Dark Red (50-70)
     const intensity = (score - 50) / 20;
-    return `hsl(10, 100%, ${53 - intensity * 10}%)`;
+    return `hsl(0, 100%, ${50 - intensity * 10}%)`;
   } else if (score <= 80) {
     // Darker Red (70-80)
     const intensity = (score - 70) / 10;
-    return `hsl(0, 95%, ${35 - intensity * 8}%)`;
+    return `hsl(0, 100%, ${40 - intensity * 8}%)`;
   } else if (score <= 90) {
-    // Dark Red (80-90)
+    // Even Darker Red (80-90)
     const intensity = (score - 80) / 10;
-    return `hsl(4, 100%, ${43 - intensity * 8}%)`;
+    return `hsl(0, 100%, ${32 - intensity * 8}%)`;
   } else {
-    // Searing Red (90-100) - Most intense, brightest red
+    // Bright Searing Red (90-100) - Most intense, brightest red
     const intensity = (score - 90) / 10;
-    return `hsl(0, 100%, ${25 - intensity * 15}%)`;
+    return `hsl(0, 100%, ${24 - intensity * 18}%)`;
   }
 }
 
@@ -59,11 +59,45 @@ interface TooltipState {
 export default function HeatmapGrid({ results, masteryScores = [], battleLog = [] }: HeatmapGridProps) {
   const [tooltip, setTooltip] = useState<TooltipState>({ cellIndex: null, x: 0, y: 0 });
 
-  // Pad results to 9 cells (3x3 grid)
-  const gridResults = [...results];
-  while (gridResults.length < 9) {
-    gridResults.push("wrong");
+  // Aggregate questions into 9 cells (3x3 grid)
+  // If we have 9 or fewer questions, pad to 9
+  // If we have 10-27 questions, aggregate multiple questions per cell
+  const totalQuestions = Math.max(results.length, masteryScores.length);
+  const questionsPerCell = Math.ceil(totalQuestions / 9);
+  
+  // Create 9 aggregated cells
+  const gridResults: Array<{
+    results: ("correct" | "wrong" | "close")[];
+    masteryScores: number[];
+    questionIndices: number[];
+  }> = [];
+  
+  for (let cellIndex = 0; cellIndex < 9; cellIndex++) {
+    const startIdx = cellIndex * questionsPerCell;
+    const endIdx = Math.min((cellIndex + 1) * questionsPerCell, totalQuestions);
+    
+    gridResults.push({
+      results: results.slice(startIdx, endIdx),
+      masteryScores: masteryScores.slice(startIdx, endIdx),
+      questionIndices: Array.from({ length: endIdx - startIdx }, (_, i) => startIdx + i + 1)
+    });
   }
+
+  // Calculate aggregated score for each cell (average mastery)
+  const gridMasteryScores = gridResults.map(cell => {
+    if (cell.masteryScores.length === 0) return 0;
+    return Math.round(cell.masteryScores.reduce((a, b) => a + b, 0) / cell.masteryScores.length);
+  });
+
+  // Calculate result type for each cell (majority vote)
+  const gridCellResults = gridResults.map(cell => {
+    if (cell.results.length === 0) return "wrong";
+    const correctCount = cell.results.filter(r => r === "correct").length;
+    const closeCount = cell.results.filter(r => r === "close").length;
+    if (correctCount > cell.results.length / 2) return "correct";
+    if (closeCount + correctCount > cell.results.length / 2) return "close";
+    return "wrong";
+  });
 
   const handleMouseEnter = (index: number, e: React.MouseEvent) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -86,7 +120,7 @@ export default function HeatmapGrid({ results, masteryScores = [], battleLog = [
         marginBottom: "8px",
         color: "var(--foreground)",
       }}>
-        Performance Heatmap (Hover for Details)
+        Performance Heatmap (Concept Areas)
       </h3>
       
       <div style={{
@@ -97,9 +131,10 @@ export default function HeatmapGrid({ results, masteryScores = [], battleLog = [
         position: "relative",
         maxWidth: "180px",
       }}>
-        {gridResults.slice(0, 9).map((result, index) => {
-          const masteryScore = masteryScores[index] || (result === "correct" ? 90 : result === "close" ? 50 : 20);
+        {gridResults.map((cell, index) => {
+          const masteryScore = gridMasteryScores[index];
           const bgColor = getMasteryColor(masteryScore);
+          const result = gridCellResults[index];
 
           return (
             <div
@@ -157,33 +192,26 @@ export default function HeatmapGrid({ results, masteryScores = [], battleLog = [
             animation: "popupEnter 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)"
           }}>
             <div style={{ marginBottom: "6px" }}>
-              <strong>Question {tooltip.cellIndex + 1}</strong>
+              <strong>Concept Area {tooltip.cellIndex + 1}</strong>
+            </div>
+
+            <div style={{ marginBottom: "6px", fontSize: "10px", color: "#9ca3af" }}>
+              Questions: {gridResults[tooltip.cellIndex].questionIndices.join(", ")}
             </div>
             
             <div style={{ marginBottom: "6px", display: "flex", gap: "6px", alignItems: "center" }}>
               <span style={{
                 fontSize: "14px",
               }}>
-                {results[tooltip.cellIndex] === "correct" ? "✓" : results[tooltip.cellIndex] === "close" ? "◐" : "✕"}
+                {gridCellResults[tooltip.cellIndex] === "correct" ? "✓" : gridCellResults[tooltip.cellIndex] === "close" ? "◐" : "✕"}
               </span>
               <span style={{ fontSize: "11px" }}>
-                {results[tooltip.cellIndex] === "correct" 
-                  ? "Correct" 
-                  : results[tooltip.cellIndex] === "close" 
-                  ? "Close/Partial" 
-                  : "Wrong"}
+                {gridCellResults[tooltip.cellIndex] === "correct" 
+                  ? "Mastered" 
+                  : gridCellResults[tooltip.cellIndex] === "close" 
+                  ? "Progressing" 
+                  : "Needs Work"}
               </span>
-            </div>
-
-            <div style={{
-              padding: "6px",
-              backgroundColor: "rgba(255, 255, 255, 0.1)",
-              borderRadius: "4px",
-              marginBottom: "6px",
-              fontSize: "11px",
-              fontStyle: "italic",
-            }}>
-              {battleLog[tooltip.cellIndex]?.feedback || "No feedback available"}
             </div>
 
             <div style={{
@@ -192,7 +220,7 @@ export default function HeatmapGrid({ results, masteryScores = [], battleLog = [
               paddingTop: "6px",
               borderTop: "1px solid rgba(255, 255, 255, 0.1)",
             }}>
-              Mastery: <strong>{masteryScores[tooltip.cellIndex] || 50}%</strong>
+              Avg Mastery: <strong>{gridMasteryScores[tooltip.cellIndex]}%</strong>
             </div>
           </div>
         )}
@@ -235,7 +263,7 @@ export default function HeatmapGrid({ results, masteryScores = [], battleLog = [
         <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
             <div style={{ width: "18px", height: "18px", borderRadius: "3px", backgroundColor: getMasteryColor(60), border: "1px solid rgba(0, 0, 0, 0.2)" }} />
-            <span style={{ fontWeight: "600", fontSize: "10px" }}>Light Red</span>
+            <span style={{ fontWeight: "600", fontSize: "10px" }}>Dark Red</span>
           </div>
           <span style={{ fontSize: "9px", color: "var(--text-muted)", marginLeft: "24px" }}>50-70%</span>
         </div>
@@ -251,7 +279,7 @@ export default function HeatmapGrid({ results, masteryScores = [], battleLog = [
         <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
             <div style={{ width: "18px", height: "18px", borderRadius: "3px", backgroundColor: getMasteryColor(85), border: "1px solid rgba(0, 0, 0, 0.2)" }} />
-            <span style={{ fontWeight: "600", fontSize: "10px" }}>Dark Red</span>
+            <span style={{ fontWeight: "600", fontSize: "10px" }}>Even Darker</span>
           </div>
           <span style={{ fontSize: "9px", color: "var(--text-muted)", marginLeft: "24px" }}>80-90%</span>
         </div>
@@ -259,7 +287,7 @@ export default function HeatmapGrid({ results, masteryScores = [], battleLog = [
         <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
             <div style={{ width: "18px", height: "18px", borderRadius: "3px", backgroundColor: getMasteryColor(95), border: "1px solid rgba(0, 0, 0, 0.2)" }} />
-            <span style={{ fontWeight: "600", fontSize: "10px" }}>Searing Red</span>
+            <span style={{ fontWeight: "600", fontSize: "10px" }}>Bright Searing</span>
           </div>
           <span style={{ fontSize: "9px", color: "var(--text-muted)", marginLeft: "24px" }}>90-100%</span>
         </div>
@@ -278,7 +306,7 @@ export default function HeatmapGrid({ results, masteryScores = [], battleLog = [
         <div style={{
           height: "20px",
           borderRadius: "4px",
-          background: "linear-gradient(90deg, hsl(38, 100%, 88%) 0%, hsl(38, 100%, 80%) 10%, hsl(32, 100%, 80%) 14%, hsl(32, 100%, 68%) 30%, hsl(24, 100%, 68%) 35%, hsl(24, 100%, 53%) 50%, hsl(10, 100%, 53%) 70%, hsl(0, 95%, 35%) 80%, hsl(4, 100%, 43%) 85%, hsl(0, 100%, 25%) 100%)",
+          background: "linear-gradient(90deg, hsl(38, 100%, 88%) 0%, hsl(32, 100%, 80%) 15%, hsl(24, 100%, 68%) 30%, hsl(0, 100%, 50%) 50%, hsl(0, 100%, 40%) 70%, hsl(0, 100%, 32%) 80%, hsl(0, 100%, 20%) 95%, hsl(0, 100%, 6%) 100%)",
           border: "1px solid rgba(0, 0, 0, 0.1)",
         }} />
         <div style={{
