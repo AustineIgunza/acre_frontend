@@ -40,12 +40,12 @@ export default function Home() {
         />
       </div>
 
-      <div className="relative container mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6 max-h-screen overflow-y-auto">
+      <div className="relative container mx-auto px-3 sm:px-4 lg:px-6 py-3 sm:py-4 h-screen flex flex-col overflow-hidden">
         {/* Mode Toggle */}
         <GameModeToggle />
 
         {/* Header */}
-        <div className="mb-4 sm:mb-6 text-center" style={{ animation: "smoothFadeIn 0.8s ease-out" }}>
+        <div className="mb-3 sm:mb-4 text-center" style={{ animation: "smoothFadeIn 0.8s ease-out" }}>
           <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-1 sm:mb-2 tracking-tight" style={{ color: "var(--foreground)" }}>
             ACRE
           </h1>
@@ -54,15 +54,17 @@ export default function Home() {
           </p>
         </div>
 
-        {/* Main Content */}
-        <div style={{ animation: "popupEnter 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)" }}>
-          {!battle_state ? (
-            <BattleInput />
-          ) : is_battle_active ? (
-            <BattleArena />
-          ) : (
-            <BattleResult onReset={resetBattle} />
-          )}
+        {/* Main Content - Flex to fill remaining space */}
+        <div className="flex-1 min-h-0 overflow-y-auto" style={{ animation: "popupEnter 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)" }}>
+          <div className="px-3 sm:px-4 lg:px-6">
+            {!battle_state ? (
+              <BattleInput />
+            ) : is_battle_active ? (
+              <BattleArena />
+            ) : (
+              <BattleResult onReset={resetBattle} />
+            )}
+          </div>
         </div>
       </div>
     </div>
