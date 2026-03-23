@@ -121,6 +121,7 @@ export default function BattleResult({ onReset }: BattleResultProps) {
             if (log.damage_dealt > 10) return 50 + Math.random() * 16; // 50-66 (close/partial)
             return 20 + Math.random() * 13; // 20-33 (wrong)
           })}
+          battleLog={battle_state.battle_log}
         />
       </div>
 
