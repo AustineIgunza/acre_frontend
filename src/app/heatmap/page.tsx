@@ -33,11 +33,11 @@ export default function HeatmapPage() {
     );
   }
 
-  const progressNodes = progressDetails;
+  const progressNodes = progressDetails || [];
   const totalConcepts = progressNodes.length;
-  const masteredCount = progressNodes.filter(n => n.isIgnited).length;
+  const masteredCount = (progressNodes as any[]).filter((n: any) => n.isIgnited).length;
   const averageHeat = totalConcepts > 0
-    ? Math.round(progressNodes.reduce((sum, n) => sum + n.heatScore, 0) / totalConcepts)
+    ? Math.round((progressNodes as any[]).reduce((sum: number, n: any) => sum + n.heatScore, 0) / totalConcepts)
     : 0;
 
   const getHeatColor = (heat: number) => {
@@ -88,8 +88,8 @@ export default function HeatmapPage() {
             <h3 style={{ fontSize: "18px", fontWeight: 700, color: "var(--t-deep)", marginBottom: "16px" }}>All Concept Nodes</h3>
             <div className="folio-card" style={{ padding: "0", overflow: "hidden" }}>
               {progressNodes
-                .sort((a, b) => b.heatScore - a.heatScore)
-                .map((node, i) => (
+                .sort((a: any, b: any) => b.heatScore - a.heatScore)
+                .map((node: any, i: number) => (
                 <div
                   key={node.nodeId}
                   style={{
@@ -116,7 +116,7 @@ export default function HeatmapPage() {
                         {node.nodeId
                           .replace(/^(node|scenario|concept)[-_]?/i, "")
                           .replace(/[-_]/g, " ")
-                          .replace(/\b\w/g, c => c.toUpperCase())
+                          .replace(/\b\w/g, (c: string) => c.toUpperCase())
                           || `Concept ${node.nodeId}`}
                       </span>
                       <div style={{ fontSize: "12px", color: "var(--t-muted)", marginTop: "2px" }}>

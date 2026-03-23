@@ -24,17 +24,17 @@ export default function DashboardPage() {
 
   // Compute live stats from DB data
   const stats = useMemo(() => {
-    const nodes = progressDetails;
+    const nodes = progressDetails || [];
     const totalConcepts = nodes.length;
-    const masteredCount = nodes.filter(n => n.isIgnited).length;
+    const masteredCount = (nodes as any[]).filter((n: any) => n.isIgnited).length;
     const averageHeat = totalConcepts > 0
-      ? Math.round(nodes.reduce((sum, n) => sum + n.heatScore, 0) / totalConcepts)
+      ? Math.round((nodes as any[]).reduce((sum: number, n: any) => sum + n.heatScore, 0) / totalConcepts)
       : 0;
     const recentNodes = [...nodes]
-      .sort((a, b) => new Date(b.lastAttempt).getTime() - new Date(a.lastAttempt).getTime())
+      .sort((a: any, b: any) => new Date(b.lastAttempt).getTime() - new Date(a.lastAttempt).getTime())
       .slice(0, 5);
       
-    const decayedNodes = nodes.filter(n => {
+    const decayedNodes = (nodes as any[]).filter((n: any) => {
       // Must have been ignited, but it's been over 48 hours
       if (!n.isIgnited) return false;
       const hoursSinceAttempt = (Date.now() - new Date(n.lastAttempt).getTime()) / (1000 * 60 * 60);
@@ -93,7 +93,7 @@ export default function DashboardPage() {
             DASHBOARD
           </span>
           <h1 style={{ fontSize: "36px", letterSpacing: "-1px", color: "var(--t-primary)", marginBottom: "8px" }}>
-            Welcome back, {user.user_metadata?.full_name?.split(" ")[0] || user.email?.split("@")[0] || "Student"}.
+            Welcome back, {(user as any)?.user_metadata?.full_name?.split(" ")[0] || (user as any)?.email?.split("@")[0] || "Student"}.
           </h1>
           <p style={{ fontSize: "17px", color: "var(--t-secondary)" }}>
             Your learning progress at a glance.
@@ -160,7 +160,7 @@ export default function DashboardPage() {
                         {node.nodeId
                           .replace(/^(node|scenario|concept)[-_]?/i, "")
                           .replace(/[-_]/g, " ")
-                          .replace(/\b\w/g, c => c.toUpperCase())
+                          .replace(/\b\w/g, (c: string) => c.toUpperCase())
                           || `Concept ${node.nodeId}`}
                       </span>
                       <span style={{
@@ -217,7 +217,7 @@ export default function DashboardPage() {
                         {node.nodeId
                           .replace(/^(node|scenario|concept)[-_]?/i, "")
                           .replace(/[-_]/g, " ")
-                          .replace(/\b\w/g, c => c.toUpperCase())
+                          .replace(/\b\w/g, (c: string) => c.toUpperCase())
                           || `Concept ${node.nodeId}`}
                       </span>
                       <span style={{

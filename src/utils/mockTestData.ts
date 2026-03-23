@@ -127,14 +127,61 @@ export const MOCK_ENCOUNTERS: CombatEncounter[] = [
     correct_option: "A",
     win_feedback: "🔥 PERFECT UNDERSTANDING! As cells grow, the ratio decreases, limiting how large they can be.",
     loss_feedback: "❌ As cells grow, the SA:V ratio decreases, creating a limit on cell size."
+  },
+  {
+    id: 10,
+    scenario: "Which of the following best describes ATP?",
+    options: {
+      A: "The primary energy currency of the cell",
+      B: "A structural component of the cell membrane",
+      C: "A type of enzyme that catalyzes reactions",
+      D: "A protein that stores genetic information"
+    },
+    correct_option: "A",
+    win_feedback: "🔥 ABSOLUTELY RIGHT! ATP is the universal energy currency for cellular processes.",
+    loss_feedback: "❌ ATP (adenosine triphosphate) is the cell's primary energy currency."
+  },
+  {
+    id: 11,
+    scenario: "What is the role of the Golgi apparatus in the cell?",
+    options: {
+      A: "Protein synthesis and translation",
+      B: "Modifying, packaging, and shipping proteins and lipids",
+      C: "Breaking down cellular waste",
+      D: "Producing ATP for the cell"
+    },
+    correct_option: "B",
+    win_feedback: "🔥 EXACTLY! The Golgi apparatus modifies and packages proteins for transport.",
+    loss_feedback: "❌ The Golgi apparatus modifies and packages proteins and lipids for transport. It's like the cell's post office."
+  },
+  {
+    id: 12,
+    scenario: "How do lysosomes contribute to cellular homeostasis?",
+    options: {
+      A: "By synthesizing new proteins",
+      B: "By breaking down and recycling cellular waste and damaged organelles",
+      C: "By regulating ion balance across membranes",
+      D: "By producing energy for the cell"
+    },
+    correct_option: "B",
+    win_feedback: "🔥 SPOT ON! Lysosomes are the cell's cleanup crew - they break down waste.",
+    loss_feedback: "❌ Lysosomes are membrane-bound organelles filled with digestive enzymes that break down waste."
   }
 ];
 
-// Test boss configuration
+// Test boss configuration - now supports all 12 encounters, but limits to 9 for heatmap
+// (can be extended to show 12 questions aggregated into 9 cells in future)
 export const MOCK_TEST_BOSS: CombatBoss = {
   boss_name: "The Cell Cycle Guardian",
   intro_narrative: "You face the Cell Cycle Guardian - a master of cellular biology. Prove your understanding of cells, respiration, and life's fundamental processes.",
-  encounters: MOCK_ENCOUNTERS.slice(0, 9) // Use first 9 encounters for 3x3 grid
+  encounters: MOCK_ENCOUNTERS.slice(0, 9) // Default: 9 encounters for 3x3 grid
+};
+
+// Extended boss with 12 encounters (for future 9+ question support)
+export const MOCK_TEST_BOSS_12: CombatBoss = {
+  boss_name: "The Cell Cycle Master",
+  intro_narrative: "Face the ultimate Cell Cycle Master - an expert in all aspects of cellular biology and advanced concepts.",
+  encounters: MOCK_ENCOUNTERS // All 12 encounters
 };
 
 // Sample data structure for displaying heatmap results
@@ -144,6 +191,41 @@ export const MOCK_HEATMAP_RESULTS = {
   wrong: 1,
   total: 9
 };
+
+/**
+ * Generate sample mastery scores showing varied colors
+ * Returns 9 scores: 2 low (blue), 3 medium (orange), 4 high (red)
+ */
+export function generateSampleMasteryScores(): number[] {
+  return [
+    25,   // Blue (0-33%)
+    42,   // Blue (0-33%)
+    58,   // Orange (34-66%)
+    65,   // Orange (34-66%)
+    72,   // Orange (34-66%)
+    82,   // Red (67-100%)
+    89,   // Red (67-100%)
+    95,   // Red (67-100%)
+    98    // Red (67-100%)
+  ];
+}
+
+/**
+ * Generate sample results showing mixed correctness
+ */
+export function generateSampleResults(): ("correct" | "wrong" | "close")[] {
+  return [
+    "wrong",   // Blue
+    "close",   // Blue
+    "close",   // Orange
+    "correct", // Orange
+    "close",   // Orange
+    "correct", // Red
+    "correct", // Red
+    "correct", // Red
+    "correct"  // Red
+  ];
+}
 
 /**
  * Generate sample battle results with staggered correct/close/wrong answers

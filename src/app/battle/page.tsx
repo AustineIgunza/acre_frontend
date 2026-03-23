@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useArceStore } from "@/store/arceStore";
 import { useCombatStore } from "@/store/combatStore";
 import { useRouter } from "next/navigation";
 import Navbar from "@/components/Navbar";
@@ -9,31 +8,11 @@ import MultimodalInput from "@/components/MultimodalInput";
 import BattleArena from "@/components/BattleArena";
 
 export default function BattlePage() {
-  const { user, authInitialized, initAuth } = useArceStore();
   const { battle_state, startBattle, resetBattle, is_loading, error: battleError } = useCombatStore();
   const router = useRouter();
 
-  useEffect(() => {
-    initAuth();
-  }, [initAuth]);
-
-  useEffect(() => {
-    if (authInitialized && !user) {
-      router.push("/signin");
-    }
-  }, [user, authInitialized, router]);
-
-  if (!authInitialized || !user) {
-    return (
-      <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "var(--p-surface)" }}>
-        <div style={{
-          width: "40px", height: "40px", borderRadius: "50%",
-          border: "3px solid var(--p-border)", borderTopColor: "var(--snap)",
-          animation: "spin 0.6s linear infinite"
-        }} />
-      </div>
-    );
-  }
+  // Optional: Add auth check later when backend is ready
+  // For now, users can access directly
 
   const handleStartBattle = async (payload: { text?: string; url?: string; file?: File }, title: string) => {
     await startBattle(payload, title);
