@@ -67,17 +67,17 @@ export default function EncounterCard({
       </div>
 
       {/* Options */}
-      <div className="px-4 sm:px-5 py-4 sm:py-5" style={{ position: "relative" }}>
-        <p className="text-xs font-semibold mb-3" style={{ color: "var(--text-muted)" }}>
+      <div className="px-4 sm:px-5 py-2 sm:py-3" style={{ position: "relative" }}>
+        <p className="text-xs font-semibold mb-2" style={{ color: "var(--text-muted)" }}>
           Select your answer:
         </p>
-        <div className="space-y-2 mb-4" style={{ position: "relative" }}>
+        <div className="space-y-1 mb-3" style={{ position: "relative" }}>
           {options.map(({ key, label }, index) => (
             <div key={key} style={{ position: "relative" }}>
               <button
                 onClick={() => handleChoice(key)}
                 disabled={is_loading || !!selectedChoice}
-                className="w-full p-2 sm:p-3 text-left rounded-xl border-2 transition-all"
+                className="w-full p-1.5 sm:p-2 text-left rounded-lg border-2 transition-all"
                 style={{
                   backgroundColor: selectedChoice === key 
                     ? toastData?.isCorrect 
@@ -88,8 +88,6 @@ export default function EncounterCard({
                     ? toastData?.isCorrect 
                       ? "var(--success)" 
                       : "var(--error)"
-                    : hoveredOption === key
-                    ? "var(--primary)"
                     : "var(--border)",
                   color: selectedChoice === key 
                     ? toastData?.isCorrect 
@@ -99,12 +97,10 @@ export default function EncounterCard({
                   cursor: is_loading || !!selectedChoice ? "not-allowed" : "pointer",
                   opacity: is_loading || !!selectedChoice ? 0.6 : 1,
                   animation: `slideInFromLeft ${0.3 + index * 0.08}s cubic-bezier(0.34, 1.56, 0.64, 1)`,
-                  transform: hoveredOption === key && !is_loading && !selectedChoice 
-                    ? "translateY(-2px)" 
-                    : "translateY(0)",
                   overflow: "hidden",
                   textOverflow: "ellipsis",
-                  whiteSpace: "nowrap"
+                  whiteSpace: "nowrap",
+                  pointerEvents: is_loading || !!selectedChoice ? "none" : "auto"
                 }}
                 onMouseEnter={() => !is_loading && !selectedChoice && setHoveredOption(key)}
                 onMouseLeave={() => setHoveredOption(null)}
@@ -124,13 +120,14 @@ export default function EncounterCard({
                     border: "2px solid var(--primary)",
                     borderRadius: "12px",
                     padding: "12px",
-                    maxWidth: "min(300px, 90vw)",
+                    maxWidth: "min(280px, 85vw)",
                     zIndex: 10001,
                     boxShadow: "0 8px 24px rgba(0,0,0,0.15)",
                     animation: "popupEnter 0.2s cubic-bezier(0.34, 1.56, 0.64, 1)",
                     pointerEvents: "none",
-                    top: "20px",
-                    right: "20px",
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
                   }}
                 >
                   <p className="text-xs sm:text-sm" style={{ color: "var(--text-secondary)" }}>

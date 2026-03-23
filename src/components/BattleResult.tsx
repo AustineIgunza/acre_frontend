@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useCombatStore } from "@/store/combatStore";
 import { saveHeatmapResults } from "@/utils/localStorage";
 import HeatmapGrid from "./HeatmapGrid";
 import SaveProgress from "./SaveProgress";
+import ShareModal from "./UI/ShareModal";
 
 interface BattleResultProps {
   onReset: () => void;
@@ -12,6 +13,7 @@ interface BattleResultProps {
 
 export default function BattleResult({ onReset }: BattleResultProps) {
   const { battle_state } = useCombatStore();
+  const [showShareModal, setShowShareModal] = useState(false);
 
   // Save battle results to local storage
   useEffect(() => {
@@ -176,7 +178,7 @@ export default function BattleResult({ onReset }: BattleResultProps) {
       {/* Action Buttons */}
       <div className="flex gap-2 justify-center flex-wrap">
         <button
-          onClick={onReset}
+          onClick={() => setShowShareModal(true)}
           className="px-4 sm:px-5 py-2 rounded-xl font-semibold text-xs sm:text-sm"
           style={{
             backgroundColor: isVictory ? "var(--success)" : "var(--primary)",
@@ -190,7 +192,7 @@ export default function BattleResult({ onReset }: BattleResultProps) {
             e.currentTarget.style.filter = "brightness(1)";
           }}
         >
-          {isVictory ? "🎉 Share" : "⚔️ Again"}
+          {isVictory ? "🎉 Share Results" : "📤 Share"}
         </button>
         <button
           onClick={onReset}
@@ -207,12 +209,18 @@ export default function BattleResult({ onReset }: BattleResultProps) {
             e.currentTarget.style.filter = "brightness(1)";
           }}
         >
-          ← New Challenge
+          {isVictory ? "⚔️ Next Battle" : "⚔️ Again"}
         </button>
       </div>
 
       {/* Save Progress & Sign In */}
       <SaveProgress playerScore={correctAnswers} totalQuestions={totalEncounters} canSave={true} />
+
+      {/* Share Modal */}
+      <ShareModal 
+        isOpen={showShareModal} 
+        onClose={() => setShowShareModal(false)}
+      />
 
       {/* Tips */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
