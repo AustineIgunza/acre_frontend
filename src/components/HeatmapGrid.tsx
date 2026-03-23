@@ -15,22 +15,38 @@ interface HeatmapGridProps {
 
 /**
  * Heatmap gradient colors based on mastery level (0-100)
- * Light Orange (0-33%) → Orange (34-66%) → Searing Red (67-100%)
+ * 7-band gradient: Light Orange → Deep Orange → Dark Orange → Light Red → Dark Red → Searing Red
+ * 0-10: Light Orange | 10-30: Deep Orange | 30-50: Dark Orange | 50-70: Light Red | 70-80: Dark Red | 80-90: Dark Red | 90-100: Searing Red
  */
 export function getMasteryColor(score: number): string {
-  if (score < 34) {
-    // Light Orange gradient: 0-33%
-    const intensity = score / 33;
-    return `hsl(32, 100%, ${85 - intensity * 15}%)`;
-  } else if (score < 67) {
-    // Orange to Red gradient: 34-66%
-    const intensity = (score - 33) / 33;
-    const hue = 32 - intensity * 15; // 32 (orange) → 17 (red-orange)
-    return `hsl(${hue}, 100%, ${70 - intensity * 15}%)`;
+  if (score <= 10) {
+    // Light Orange (0-10)
+    const intensity = score / 10;
+    return `hsl(38, 100%, ${88 - intensity * 8}%)`;
+  } else if (score <= 30) {
+    // Deep Orange (10-30)
+    const intensity = (score - 10) / 20;
+    return `hsl(32, 100%, ${80 - intensity * 12}%)`;
+  } else if (score <= 50) {
+    // Dark Orange (30-50)
+    const intensity = (score - 30) / 20;
+    return `hsl(24, 100%, ${68 - intensity * 15}%)`;
+  } else if (score <= 70) {
+    // Light Red (50-70)
+    const intensity = (score - 50) / 20;
+    return `hsl(10, 100%, ${53 - intensity * 10}%)`;
+  } else if (score <= 80) {
+    // Dark Red (70-80)
+    const intensity = (score - 70) / 10;
+    return `hsl(4, 100%, ${43 - intensity * 8}%)`;
+  } else if (score <= 90) {
+    // Darker Red (80-90)
+    const intensity = (score - 80) / 10;
+    return `hsl(0, 95%, ${35 - intensity * 8}%)`;
   } else {
-    // Searing Red gradient: 67-100%
-    const intensity = (score - 66) / 34;
-    return `hsl(0, 100%, ${55 - intensity * 20}%)`;
+    // Searing Red (90-100)
+    const intensity = (score - 90) / 10;
+    return `hsl(0, 100%, ${27 - intensity * 12}%)`;
   }
 }
 
@@ -182,65 +198,67 @@ export default function HeatmapGrid({ results, masteryScores = [], battleLog = [
       {/* Legend */}
       <div style={{
         display: "grid",
-        gridTemplateColumns: "1fr 1fr 1fr",
+        gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))",
         gap: "12px",
         padding: "16px",
         backgroundColor: "var(--surface)",
         borderRadius: "8px",
         fontSize: "13px",
       }}>
-        <div style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: "8px",
-        }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-            <div style={{
-              width: "24px",
-              height: "24px",
-              borderRadius: "4px",
-              backgroundColor: getMasteryColor(15),
-              border: "1px solid rgba(0, 0, 0, 0.2)",
-            }} />
-            <span style={{ fontWeight: "600" }}>Light Orange (0-33%)</span>
+            <div style={{ width: "24px", height: "24px", borderRadius: "4px", backgroundColor: getMasteryColor(5), border: "1px solid rgba(0, 0, 0, 0.2)" }} />
+            <span style={{ fontWeight: "600", fontSize: "12px" }}>Light Orange</span>
           </div>
-          <span style={{ fontSize: "12px", color: "var(--text-muted)" }}>🍊 Early learning</span>
+          <span style={{ fontSize: "11px", color: "var(--text-muted)", marginLeft: "32px" }}>0-10%</span>
         </div>
 
-        <div style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: "8px",
-        }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-            <div style={{
-              width: "24px",
-              height: "24px",
-              borderRadius: "4px",
-              backgroundColor: getMasteryColor(50),
-              border: "1px solid rgba(0, 0, 0, 0.2)",
-            }} />
-            <span style={{ fontWeight: "600" }}>Orange (34-66%)</span>
+            <div style={{ width: "24px", height: "24px", borderRadius: "4px", backgroundColor: getMasteryColor(20), border: "1px solid rgba(0, 0, 0, 0.2)" }} />
+            <span style={{ fontWeight: "600", fontSize: "12px" }}>Deep Orange</span>
           </div>
-          <span style={{ fontSize: "12px", color: "var(--text-muted)" }}>🟠 Building competence</span>
+          <span style={{ fontSize: "11px", color: "var(--text-muted)", marginLeft: "32px" }}>10-30%</span>
         </div>
 
-        <div style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: "8px",
-        }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-            <div style={{
-              width: "24px",
-              height: "24px",
-              borderRadius: "4px",
-              backgroundColor: getMasteryColor(85),
-              border: "1px solid rgba(0, 0, 0, 0.2)",
-            }} />
-            <span style={{ fontWeight: "600" }}>Searing Red (67-100%)</span>
+            <div style={{ width: "24px", height: "24px", borderRadius: "4px", backgroundColor: getMasteryColor(40), border: "1px solid rgba(0, 0, 0, 0.2)" }} />
+            <span style={{ fontWeight: "600", fontSize: "12px" }}>Dark Orange</span>
           </div>
-          <span style={{ fontSize: "12px", color: "var(--text-muted)" }}>� Expert mastery</span>
+          <span style={{ fontSize: "11px", color: "var(--text-muted)", marginLeft: "32px" }}>30-50%</span>
+        </div>
+
+        <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <div style={{ width: "24px", height: "24px", borderRadius: "4px", backgroundColor: getMasteryColor(60), border: "1px solid rgba(0, 0, 0, 0.2)" }} />
+            <span style={{ fontWeight: "600", fontSize: "12px" }}>Light Red</span>
+          </div>
+          <span style={{ fontSize: "11px", color: "var(--text-muted)", marginLeft: "32px" }}>50-70%</span>
+        </div>
+
+        <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <div style={{ width: "24px", height: "24px", borderRadius: "4px", backgroundColor: getMasteryColor(75), border: "1px solid rgba(0, 0, 0, 0.2)" }} />
+            <span style={{ fontWeight: "600", fontSize: "12px" }}>Dark Red</span>
+          </div>
+          <span style={{ fontSize: "11px", color: "var(--text-muted)", marginLeft: "32px" }}>70-80%</span>
+        </div>
+
+        <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <div style={{ width: "24px", height: "24px", borderRadius: "4px", backgroundColor: getMasteryColor(85), border: "1px solid rgba(0, 0, 0, 0.2)" }} />
+            <span style={{ fontWeight: "600", fontSize: "12px" }}>Darker Red</span>
+          </div>
+          <span style={{ fontSize: "11px", color: "var(--text-muted)", marginLeft: "32px" }}>80-90%</span>
+        </div>
+
+        <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <div style={{ width: "24px", height: "24px", borderRadius: "4px", backgroundColor: getMasteryColor(95), border: "1px solid rgba(0, 0, 0, 0.2)" }} />
+            <span style={{ fontWeight: "600", fontSize: "12px" }}>Searing Red</span>
+          </div>
+          <span style={{ fontSize: "11px", color: "var(--text-muted)", marginLeft: "32px" }}>90-100%</span>
         </div>
       </div>
 
@@ -253,11 +271,11 @@ export default function HeatmapGrid({ results, masteryScores = [], battleLog = [
         fontSize: "12px",
         color: "var(--text-muted)",
       }}>
-        <div style={{ marginBottom: "8px", fontWeight: "600" }}>Color Gradient:</div>
+        <div style={{ marginBottom: "8px", fontWeight: "600" }}>7-Band Color Gradient:</div>
         <div style={{
-          height: "30px",
+          height: "40px",
           borderRadius: "6px",
-          background: "linear-gradient(90deg, hsl(210, 85%, 45%) 0%, hsl(210, 85%, 75%) 16%, hsl(252, 92%, 60%) 33%, hsl(252, 95%, 55%) 50%, hsl(36, 95%, 55%) 66%, hsl(24, 95%, 45%) 100%)",
+          background: "linear-gradient(90deg, hsl(38, 100%, 88%) 0%, hsl(38, 100%, 80%) 10%, hsl(32, 100%, 80%) 14%, hsl(32, 100%, 68%) 30%, hsl(24, 100%, 68%) 35%, hsl(24, 100%, 53%) 50%, hsl(10, 100%, 53%) 70%, hsl(4, 100%, 35%) 80%, hsl(0, 95%, 27%) 90%, hsl(0, 100%, 15%) 100%)",
           border: "1px solid rgba(0, 0, 0, 0.1)",
         }} />
         <div style={{
@@ -268,9 +286,11 @@ export default function HeatmapGrid({ results, masteryScores = [], battleLog = [
           fontWeight: "500",
         }}>
           <span>0%</span>
-          <span>33%</span>
+          <span>10%</span>
+          <span>30%</span>
           <span>50%</span>
-          <span>66%</span>
+          <span>70%</span>
+          <span>90%</span>
           <span>100%</span>
         </div>
       </div>
