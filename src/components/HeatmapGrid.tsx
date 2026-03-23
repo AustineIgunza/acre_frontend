@@ -15,29 +15,22 @@ interface HeatmapGridProps {
 
 /**
  * Heatmap gradient colors based on mastery level (0-100)
- * Blue (Hold/Cold): 0-33%
- * Orange (Warm): 34-66%
- * Red (Hot): 67-100%
- * 
- * Gradient transitions:
- * Blue → Orange → Red
+ * Light Orange (0-33%) → Orange (34-66%) → Searing Red (67-100%)
  */
 export function getMasteryColor(score: number): string {
   if (score < 34) {
-    // Blue gradient: cold/hold phase (0-33%)
-    // Darker blue to lighter blue
+    // Light Orange gradient: 0-33%
     const intensity = score / 33;
-    return `hsl(210, 85%, ${45 + intensity * 30}%)`;
+    return `hsl(32, 100%, ${85 - intensity * 15}%)`;
   } else if (score < 67) {
-    // Orange gradient: warm phase (34-66%)
-    // Blue-orange to orange-red transition
+    // Orange to Red gradient: 34-66%
     const intensity = (score - 33) / 33;
-    return `hsl(${210 + intensity * 42}, 90%, ${50 + intensity * 10}%)`;
+    const hue = 32 - intensity * 15; // 32 (orange) → 17 (red-orange)
+    return `hsl(${hue}, 100%, ${70 - intensity * 15}%)`;
   } else {
-    // Red gradient: hot/ignition phase (67-100%)
-    // Orange-red to pure red
+    // Searing Red gradient: 67-100%
     const intensity = (score - 66) / 34;
-    return `hsl(${252 + intensity * 12}, 95%, ${45 - intensity * 10}%)`;
+    return `hsl(0, 100%, ${55 - intensity * 20}%)`;
   }
 }
 
@@ -209,9 +202,9 @@ export default function HeatmapGrid({ results, masteryScores = [], battleLog = [
               backgroundColor: getMasteryColor(15),
               border: "1px solid rgba(0, 0, 0, 0.2)",
             }} />
-            <span style={{ fontWeight: "600" }}>Hold (0-33%)</span>
+            <span style={{ fontWeight: "600" }}>Light Orange (0-33%)</span>
           </div>
-          <span style={{ fontSize: "12px", color: "var(--text-muted)" }}>🔵 Cold phase</span>
+          <span style={{ fontSize: "12px", color: "var(--text-muted)" }}>🍊 Early learning</span>
         </div>
 
         <div style={{
@@ -227,9 +220,9 @@ export default function HeatmapGrid({ results, masteryScores = [], battleLog = [
               backgroundColor: getMasteryColor(50),
               border: "1px solid rgba(0, 0, 0, 0.2)",
             }} />
-            <span style={{ fontWeight: "600" }}>Warm (34-66%)</span>
+            <span style={{ fontWeight: "600" }}>Orange (34-66%)</span>
           </div>
-          <span style={{ fontSize: "12px", color: "var(--text-muted)" }}>🟠 Growing competence</span>
+          <span style={{ fontSize: "12px", color: "var(--text-muted)" }}>🟠 Building competence</span>
         </div>
 
         <div style={{
@@ -245,9 +238,9 @@ export default function HeatmapGrid({ results, masteryScores = [], battleLog = [
               backgroundColor: getMasteryColor(85),
               border: "1px solid rgba(0, 0, 0, 0.2)",
             }} />
-            <span style={{ fontWeight: "600" }}>Hot (67-100%)</span>
+            <span style={{ fontWeight: "600" }}>Searing Red (67-100%)</span>
           </div>
-          <span style={{ fontSize: "12px", color: "var(--text-muted)" }}>🔴 Expert mastery</span>
+          <span style={{ fontSize: "12px", color: "var(--text-muted)" }}>� Expert mastery</span>
         </div>
       </div>
 
