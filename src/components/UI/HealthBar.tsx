@@ -9,23 +9,44 @@ export default function HealthBar({
   percentage,
   color = "blue",
 }: HealthBarProps) {
-  const colorClasses = {
-    blue: "bg-gradient-to-r from-blue-500 to-cyan-500 shadow-blue-500/50",
-    red: "bg-gradient-to-r from-red-500 to-orange-500 shadow-red-500/50",
-    green: "bg-gradient-to-r from-green-500 to-emerald-500 shadow-green-500/50",
+  const colorStyles = {
+    blue: {
+      background: "linear-gradient(90deg, var(--primary), var(--secondary))",
+      shadow: "0 0 12px rgba(99, 102, 241, 0.3)"
+    },
+    red: {
+      background: "linear-gradient(90deg, var(--error), var(--accent-warm))",
+      shadow: "0 0 12px rgba(239, 68, 68, 0.3)"
+    },
+    green: {
+      background: "linear-gradient(90deg, var(--success), var(--primary))",
+      shadow: "0 0 12px rgba(16, 185, 129, 0.3)"
+    }
   };
 
+  const styles = colorStyles[color];
+
   return (
-    <div className="w-full bg-slate-900 border border-slate-700 rounded-full p-1 shadow-lg">
+    <div 
+      className="w-full rounded-full p-1 shadow-lg"
+      style={{
+        backgroundColor: "var(--surface-alt)",
+        border: `2px solid var(--border)`
+      }}
+    >
       <div
-        className={`h-8 rounded-full transition-all duration-300 ${
-          colorClasses[color]
-        } shadow-lg flex items-center justify-center overflow-hidden`}
-        style={{ width: `${Math.max(5, percentage)}%` }}
+        className="h-6 sm:h-8 rounded-full transition-all duration-500 flex items-center justify-center overflow-hidden font-semibold text-xs sm:text-sm"
+        style={{
+          width: `${Math.max(5, percentage)}%`,
+          background: styles.background,
+          boxShadow: styles.shadow,
+          color: "white",
+          textShadow: "0 1px 3px rgba(0,0,0,0.3)"
+        }}
       >
-        <span className="text-xs font-bold text-white drop-shadow">
-          {Math.round(percentage)}%
-        </span>
+        {percentage > 10 && (
+          <span>{Math.round(percentage)}%</span>
+        )}
       </div>
     </div>
   );

@@ -43,59 +43,101 @@ export default function EncounterCard({
   ];
 
   return (
-    <div className="bg-slate-800/80 backdrop-blur border border-slate-700 rounded-lg p-8 shadow-2xl">
+    <div 
+      className="rounded-2xl border shadow-lg backdrop-blur overflow-hidden"
+      style={{
+        backgroundColor: "var(--surface)",
+        borderColor: "var(--border)",
+        animation: "smoothFadeIn 0.6s ease-out"
+      }}
+    >
       {/* Scenario */}
-      <div className="mb-8">
-        <h3 className="text-2xl font-bold text-red-400 mb-4">⚡ Scenario</h3>
-        <p className="text-lg text-slate-300 leading-relaxed">
+      <div className="px-6 sm:px-8 pt-6 sm:pt-8 pb-4 border-b" style={{ borderColor: "var(--border)" }}>
+        <h3 className="text-lg sm:text-xl font-bold mb-3" style={{ color: "var(--primary)" }}>
+          ⚡ Challenge Question
+        </h3>
+        <p className="text-sm sm:text-base leading-relaxed" style={{ color: "var(--text-secondary)" }}>
           {encounter.scenario}
         </p>
       </div>
 
       {/* Options */}
-      <div className="space-y-3 mb-8">
-        {options.map(({ key, label }) => (
-          <button
-            key={key}
-            onClick={() => handleChoice(key)}
-            disabled={is_loading || !!feedback}
-            className={`w-full p-4 text-left rounded-lg border-2 transition-all transform hover:scale-102 ${
-              feedback?.choice === key
-                ? feedback.isCorrect
-                  ? "bg-green-900 border-green-500 text-green-100"
-                  : "bg-red-900 border-red-500 text-red-100"
-                : "bg-slate-700 border-slate-600 text-slate-200 hover:border-slate-500 hover:bg-slate-600"
-            } ${
-              is_loading || !!feedback ? "cursor-not-allowed opacity-75" : ""
-            }`}
+      <div className="px-6 sm:px-8 py-6 sm:py-8">
+        <p className="text-xs sm:text-sm font-semibold mb-4" style={{ color: "var(--text-muted)" }}>
+          Select your answer:
+        </p>
+        <div className="space-y-2 sm:space-y-3 mb-6">
+          {options.map(({ key, label }, index) => (
+            <button
+              key={key}
+              onClick={() => handleChoice(key)}
+              disabled={is_loading || !!feedback}
+              className="w-full p-3 sm:p-4 text-left rounded-xl border-2 transition-all"
+              style={{
+                backgroundColor: feedback?.choice === key 
+                  ? feedback.isCorrect 
+                    ? "var(--success-soft)" 
+                    : "var(--error-soft)"
+                  : "var(--surface-alt)",
+                borderColor: feedback?.choice === key 
+                  ? feedback.isCorrect 
+                    ? "var(--success)" 
+                    : "var(--error)"
+                  : "var(--border)",
+                color: feedback?.choice === key 
+                  ? feedback.isCorrect 
+                    ? "var(--success)" 
+                    : "var(--error)"
+                  : "var(--text-secondary)",
+                cursor: is_loading || !!feedback ? "not-allowed" : "pointer",
+                opacity: is_loading || !!feedback ? 0.6 : 1,
+                animation: `slideInFromLeft ${0.4 + index * 0.1}s ease-out`,
+                transform: "translateZ(0)"
+              }}
+              onMouseEnter={(e) => {
+                if (!is_loading && !feedback) {
+                  e.currentTarget.style.borderColor = "var(--primary)";
+                  e.currentTarget.style.transform = "translateY(-2px)";
+                }
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = "var(--border)";
+                e.currentTarget.style.transform = "translateY(0)";
+              }}
+            >
+              <span className="font-bold mr-2">{key}.</span>
+              <span className="text-sm sm:text-base">{label}</span>
+            </button>
+          ))}
+        </div>
+
+        {/* Feedback */}
+        {feedback && (
+          <div
+            className="p-4 sm:p-5 rounded-xl border-2"
+            style={{
+              backgroundColor: feedback.isCorrect ? "var(--success-soft)" : "var(--error-soft)",
+              borderColor: feedback.isCorrect ? "var(--success)" : "var(--error)",
+              color: feedback.isCorrect ? "var(--success)" : "var(--error)",
+              animation: "smoothScale 0.3s ease-out"
+            }}
           >
-            <span className="font-bold">{key}.</span> {label}
-          </button>
-        ))}
+            <p className="font-bold mb-2 text-sm sm:text-base">
+              {feedback.isCorrect ? "✅ CORRECT!" : "❌ INCORRECT"}
+            </p>
+            <p className="text-xs sm:text-sm leading-relaxed">{feedback.message}</p>
+          </div>
+        )}
+
+        {/* Loading State */}
+        {is_loading && (
+          <div className="text-center" style={{ color: "var(--text-muted)" }}>
+            <p style={{ animation: "pulseGlow 1.5s ease-in-out infinite", fontSize: "14px" }}>
+              ⏳ Evaluating your answer...
+            </p>
+          </div>
+        )}
       </div>
-
-      {/* Feedback */}
-      {feedback && (
-        <div
-          className={`p-4 rounded-lg border-2 ${
-            feedback.isCorrect
-              ? "bg-green-900/30 border-green-500 text-green-300"
-              : "bg-red-900/30 border-red-500 text-red-300"
-          }`}
-        >
-          <p className="font-bold mb-2">
-            {feedback.isCorrect ? "✅ CORRECT!" : "❌ INCORRECT"}
-          </p>
-          <p>{feedback.message}</p>
-        </div>
-      )}
-
-      {/* Loading State */}
-      {is_loading && (
-        <div className="text-center text-slate-400">
-          <p className="animate-pulse">Evaluating your answer...</p>
-        </div>
-      )}
     </div>
   );
 }
