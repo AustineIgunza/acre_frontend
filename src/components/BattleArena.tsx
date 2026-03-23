@@ -19,53 +19,53 @@ export default function BattleArena() {
   const boss_hp_percent = (battle_state.boss_hp / battle_state.max_boss_hp) * 100;
 
   return (
-    <div className="w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-3 sm:space-y-4">
+    <div className="w-full max-w-4xl mx-auto px-3 sm:px-4 lg:px-6 space-y-2 sm:space-y-3">
       {/* Boss Introduction - Compact */}
       {battle_state.current_encounter_index === 0 && (
         <div 
-          className="p-3 sm:p-4 rounded-xl border text-center"
+          className="p-2 sm:p-3 rounded-xl border text-center"
           style={{
             backgroundColor: "var(--secondary-soft)",
             borderColor: "var(--secondary)",
-            animation: "smoothScale 0.5s ease-out"
+            animation: "popupEnter 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)"
           }}
         >
-          <h2 className="text-lg sm:text-xl font-bold mb-1" style={{ color: "var(--secondary)" }}>
+          <h2 className="text-sm sm:text-base font-bold mb-1" style={{ color: "var(--secondary)" }}>
             {battle_state.boss.boss_name}
           </h2>
-          <p className="text-xs sm:text-sm" style={{ color: "var(--text-secondary)" }}>
+          <p className="text-xs leading-tight" style={{ color: "var(--text-secondary)" }}>
             {battle_state.boss.intro_narrative}
           </p>
-          <p className="text-xs mt-2" style={{ color: "var(--text-muted)" }}>
+          <p className="text-xs mt-1" style={{ color: "var(--text-muted)" }}>
             Encounter {battle_state.current_encounter_index + 1} of {battle_state.boss.encounters.length}
           </p>
         </div>
       )}
 
       {/* Health Bars - Compact */}
-      <div className="space-y-2 sm:space-y-3" style={{ animation: "slideInFromLeft 0.5s ease-out" }}>
+      <div className="space-y-1 sm:space-y-2" style={{ animation: "slideInFromLeft 0.4s ease-out" }}>
         <div>
-          <div className="flex justify-between items-center mb-1">
-            <span className="font-semibold text-xs sm:text-sm" style={{ color: "var(--text-secondary)" }}>
+          <div className="flex justify-between items-center mb-0.5">
+            <span className="font-semibold text-xs" style={{ color: "var(--text-secondary)" }}>
               YOUR HP
             </span>
-            <span className="text-xs sm:text-sm" style={{ color: "var(--text-muted)" }}>
+            <span className="text-xs" style={{ color: "var(--text-muted)" }}>
               {battle_state.player_hp} / {battle_state.max_player_hp}
             </span>
           </div>
           <HealthBar percentage={player_hp_percent} color="blue" />
         </div>
 
-        <div className="text-center" style={{ color: "var(--text-muted)", fontSize: "12px", fontWeight: "bold" }}>
+        <div className="text-center" style={{ color: "var(--text-muted)", fontSize: "10px", fontWeight: "bold" }}>
           VS
         </div>
 
         <div>
-          <div className="flex justify-between items-center mb-1">
-            <span className="font-semibold text-xs sm:text-sm" style={{ color: "var(--text-secondary)" }}>
+          <div className="flex justify-between items-center mb-0.5">
+            <span className="font-semibold text-xs" style={{ color: "var(--text-secondary)" }}>
               {battle_state.boss.boss_name}
             </span>
-            <span className="text-xs sm:text-sm" style={{ color: "var(--text-muted)" }}>
+            <span className="text-xs" style={{ color: "var(--text-muted)" }}>
               {battle_state.boss_hp} / {battle_state.max_boss_hp}
             </span>
           </div>
@@ -74,7 +74,7 @@ export default function BattleArena() {
       </div>
 
       {/* Encounter Card */}
-      <div style={{ animation: "slideInFromRight 0.5s ease-out" }}>
+      <div style={{ animation: "slideInFromRight 0.4s ease-out" }}>
         <EncounterCard
           encounter={current_encounter}
           is_loading={is_loading}
@@ -84,22 +84,23 @@ export default function BattleArena() {
       {/* Battle Log - Compact */}
       {battle_state.battle_log.length > 0 && (
         <div 
-          className="rounded-xl border p-3 sm:p-4"
+          className="rounded-xl border p-2 sm:p-3"
           style={{
             backgroundColor: "var(--surface-alt)",
             borderColor: "var(--border)",
-            maxHeight: "120px",
-            overflowY: "auto"
+            maxHeight: "100px",
+            overflowY: "auto",
+            animation: "popupEnter 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)"
           }}
         >
-          <h3 className="font-bold mb-2 text-xs sm:text-sm" style={{ color: "var(--text-secondary)" }}>
+          <h3 className="font-bold mb-1 text-xs" style={{ color: "var(--text-secondary)" }}>
             ⚔️ Battle Log
           </h3>
-          <div className="space-y-1">
+          <div className="space-y-0.5">
             {[...battle_state.battle_log].reverse().slice(0, 5).map((log, idx) => (
               <div 
                 key={idx}
-                className="p-2 rounded text-xs"
+                className="p-1 rounded text-xs"
                 style={{
                   backgroundColor: log.was_correct ? "var(--success-soft)" : "var(--error-soft)",
                   color: log.was_correct ? "var(--success)" : "var(--error)"

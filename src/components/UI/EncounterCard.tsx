@@ -48,31 +48,31 @@ export default function EncounterCard({
       style={{
         backgroundColor: "var(--surface)",
         borderColor: "var(--border)",
-        animation: "smoothFadeIn 0.6s ease-out"
+        animation: "popupEnter 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)"
       }}
     >
       {/* Scenario */}
-      <div className="px-6 sm:px-8 pt-6 sm:pt-8 pb-4 border-b" style={{ borderColor: "var(--border)" }}>
-        <h3 className="text-lg sm:text-xl font-bold mb-3" style={{ color: "var(--primary)" }}>
+      <div className="px-4 sm:px-5 pt-4 sm:pt-5 pb-3 border-b" style={{ borderColor: "var(--border)" }}>
+        <h3 className="text-base sm:text-lg font-bold mb-2" style={{ color: "var(--primary)" }}>
           ⚡ Challenge Question
         </h3>
-        <p className="text-sm sm:text-base leading-relaxed" style={{ color: "var(--text-secondary)" }}>
+        <p className="text-xs sm:text-sm leading-relaxed" style={{ color: "var(--text-secondary)" }}>
           {encounter.scenario}
         </p>
       </div>
 
       {/* Options */}
-      <div className="px-6 sm:px-8 py-6 sm:py-8">
-        <p className="text-xs sm:text-sm font-semibold mb-4" style={{ color: "var(--text-muted)" }}>
+      <div className="px-4 sm:px-5 py-4 sm:py-5">
+        <p className="text-xs font-semibold mb-3" style={{ color: "var(--text-muted)" }}>
           Select your answer:
         </p>
-        <div className="space-y-2 sm:space-y-3 mb-6">
+        <div className="space-y-2 mb-4">
           {options.map(({ key, label }, index) => (
             <button
               key={key}
               onClick={() => handleChoice(key)}
               disabled={is_loading || !!feedback}
-              className="w-full p-3 sm:p-4 text-left rounded-xl border-2 transition-all"
+              className="w-full p-2 sm:p-3 text-left rounded-xl border-2 transition-all"
               style={{
                 backgroundColor: feedback?.choice === key 
                   ? feedback.isCorrect 
@@ -91,7 +91,7 @@ export default function EncounterCard({
                   : "var(--text-secondary)",
                 cursor: is_loading || !!feedback ? "not-allowed" : "pointer",
                 opacity: is_loading || !!feedback ? 0.6 : 1,
-                animation: `slideInFromLeft ${0.4 + index * 0.1}s ease-out`,
+                animation: `slideInFromLeft ${0.3 + index * 0.08}s cubic-bezier(0.34, 1.56, 0.64, 1)`,
                 transform: "translateZ(0)"
               }}
               onMouseEnter={(e) => {
@@ -106,7 +106,7 @@ export default function EncounterCard({
               }}
             >
               <span className="font-bold mr-2">{key}.</span>
-              <span className="text-sm sm:text-base">{label}</span>
+              <span className="text-xs sm:text-sm">{label}</span>
             </button>
           ))}
         </div>
@@ -114,18 +114,18 @@ export default function EncounterCard({
         {/* Feedback */}
         {feedback && (
           <div
-            className="p-4 sm:p-5 rounded-xl border-2"
+            className="p-3 sm:p-4 rounded-xl border-2"
             style={{
               backgroundColor: feedback.isCorrect ? "var(--success-soft)" : "var(--error-soft)",
               borderColor: feedback.isCorrect ? "var(--success)" : "var(--error)",
               color: feedback.isCorrect ? "var(--success)" : "var(--error)",
-              animation: "smoothScale 0.3s ease-out"
+              animation: "popupEnter 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)"
             }}
           >
-            <p className="font-bold mb-2 text-sm sm:text-base">
+            <p className="font-bold mb-1 text-xs sm:text-sm">
               {feedback.isCorrect ? "✅ CORRECT!" : "❌ INCORRECT"}
             </p>
-            <p className="text-xs sm:text-sm leading-relaxed">{feedback.message}</p>
+            <p className="text-xs leading-relaxed">{feedback.message}</p>
           </div>
         )}
 

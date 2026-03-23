@@ -21,31 +21,31 @@ export default function BattleInput() {
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-2 sm:py-4">
+    <div className="w-full max-w-3xl mx-auto px-3 sm:px-4 lg:px-6 py-1 sm:py-2">
       <div 
         className="rounded-2xl border shadow-lg backdrop-blur"
         style={{
           backgroundColor: "var(--surface)",
           borderColor: "var(--border)",
-          animation: "smoothFadeIn 0.6s ease-out"
+          animation: "popupEnter 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)"
         }}
       >
         {/* Header */}
-        <div className="px-6 sm:px-8 pt-6 sm:pt-8 pb-4 sm:pb-6 border-b" style={{ borderColor: "var(--border)" }}>
-          <h2 className="text-2xl sm:text-3xl font-bold mb-2" style={{ color: "var(--foreground)" }}>
+        <div className="px-4 sm:px-5 pt-4 sm:pt-5 pb-3 border-b" style={{ borderColor: "var(--border)" }}>
+          <h2 className="text-lg sm:text-xl font-bold mb-1" style={{ color: "var(--foreground)" }}>
             Begin Your Challenge
           </h2>
-          <p className="text-sm sm:text-base" style={{ color: "var(--text-muted)" }}>
+          <p className="text-xs sm:text-sm" style={{ color: "var(--text-muted)" }}>
             Paste your study notes to activate ACRE's adaptive learning engine
           </p>
         </div>
 
         {/* Content */}
-        <div className="px-6 sm:px-8 py-6 sm:py-8">
-          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
+        <div className="px-4 sm:px-5 py-4 sm:py-5">
+          <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
             {/* Title Input */}
-            <div className="space-y-2" style={{ animation: "slideInFromLeft 0.5s ease-out" }}>
-              <label className="block text-sm font-semibold" style={{ color: "var(--text-secondary)" }}>
+            <div className="space-y-1" style={{ animation: "slideInFromLeft 0.4s ease-out" }}>
+              <label className="block text-xs font-semibold" style={{ color: "var(--text-secondary)" }}>
                 Challenge Name (Optional)
               </label>
               <input
@@ -53,7 +53,7 @@ export default function BattleInput() {
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="e.g., Cellular Biology Fundamentals"
-                className="w-full px-4 py-2.5 rounded-xl border text-sm sm:text-base"
+                className="w-full px-3 py-2 rounded-xl border text-xs sm:text-sm"
                 style={{
                   backgroundColor: "var(--surface-alt)",
                   borderColor: "var(--border)",
@@ -64,9 +64,9 @@ export default function BattleInput() {
             </div>
 
             {/* Content Textarea */}
-            <div className="space-y-2" style={{ animation: "slideInFromLeft 0.6s ease-out" }}>
+            <div className="space-y-1" style={{ animation: "slideInFromLeft 0.5s ease-out" }}>
               <div className="flex justify-between items-baseline">
-                <label className="block text-sm font-semibold" style={{ color: "var(--text-secondary)" }}>
+                <label className="block text-xs font-semibold" style={{ color: "var(--text-secondary)" }}>
                   Study Material
                 </label>
                 <span className="text-xs" style={{ color: "var(--text-muted)" }}>
@@ -77,9 +77,9 @@ export default function BattleInput() {
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
                 placeholder="Paste your notes, transcript, or learning material..."
-                className="w-full px-4 py-3 rounded-xl border text-sm sm:text-base resize-none"
+                className="w-full px-3 py-2 rounded-xl border text-xs sm:text-sm resize-none"
                 style={{
-                  height: "140px",
+                  height: "100px",
                   backgroundColor: "var(--surface-alt)",
                   borderColor: "var(--border)",
                   color: "var(--foreground)"
@@ -91,12 +91,12 @@ export default function BattleInput() {
             {/* Error Display */}
             {error && (
               <div 
-                className="p-3 sm:p-4 rounded-xl border text-sm"
+                className="p-2 sm:p-3 rounded-xl border text-xs"
                 style={{
                   backgroundColor: "var(--error-soft)",
                   borderColor: "var(--error)",
                   color: "var(--error)",
-                  animation: "smoothScale 0.3s ease-out"
+                  animation: "popupEnter 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)"
                 }}
               >
                 {error}
@@ -107,13 +107,13 @@ export default function BattleInput() {
             <button
               type="submit"
               disabled={is_loading || !content.trim()}
-              className="w-full py-3 px-4 rounded-xl font-semibold text-sm sm:text-base"
+              className="w-full py-2 px-3 rounded-xl font-semibold text-xs sm:text-sm"
               style={{
                 backgroundColor: is_loading || !content.trim() ? "var(--text-muted)" : "var(--primary)",
                 color: "white",
                 cursor: is_loading || !content.trim() ? "not-allowed" : "pointer",
                 opacity: is_loading || !content.trim() ? 0.6 : 1,
-                animation: is_loading || !content.trim() ? "none" : "smoothScale 0.3s ease-out"
+                animation: is_loading || !content.trim() ? "none" : "popupEnter 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)"
               }}
               onMouseEnter={(e) => {
                 if (!is_loading && content.trim()) {
@@ -125,12 +125,12 @@ export default function BattleInput() {
               }}
             >
               {is_loading ? (
-                <div className="flex items-center justify-center gap-2">
+                <div className="flex items-center justify-center gap-1">
                   <div style={{ animation: "pulseGlow 1.5s ease-in-out infinite" }}>⚡</div>
                   <span>Preparing Challenge...</span>
                 </div>
               ) : (
-                <div className="flex items-center justify-center gap-2">
+                <div className="flex items-center justify-center gap-1">
                   <span>🚀</span>
                   <span>Start Learning</span>
                 </div>
@@ -139,29 +139,29 @@ export default function BattleInput() {
           </form>
 
           {/* Info Boxes */}
-          <div className="mt-6 sm:mt-8 grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+          <div className="mt-4 sm:mt-5 grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
             <div 
-              className="p-3 sm:p-4 rounded-xl border text-sm"
+              className="p-2 sm:p-3 rounded-xl border text-xs"
               style={{
                 backgroundColor: "var(--primary-soft)",
                 borderColor: "var(--primary)",
-                animation: "slideInFromLeft 0.7s ease-out"
+                animation: "slideInFromLeft 0.5s ease-out"
               }}
             >
               <p style={{ color: "var(--primary)", margin: 0 }}>
-                <strong>💡 Smart Generation:</strong> AI creates personalized scenarios from your material
+                <strong>💡 Smart:</strong> AI creates personalized scenarios from your material
               </p>
             </div>
             <div 
-              className="p-3 sm:p-4 rounded-xl border text-sm"
+              className="p-2 sm:p-3 rounded-xl border text-xs"
               style={{
                 backgroundColor: "var(--success-soft)",
                 borderColor: "var(--success)",
-                animation: "slideInFromRight 0.7s ease-out"
+                animation: "slideInFromRight 0.5s ease-out"
               }}
             >
               <p style={{ color: "var(--success)", margin: 0 }}>
-                <strong>🎯 Interactive:</strong> Answer questions to master concepts and build mastery
+                <strong>🎯 Interactive:</strong> Answer to master concepts and build mastery
               </p>
             </div>
           </div>

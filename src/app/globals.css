@@ -144,6 +144,50 @@ body {
   }
 }
 
+/* Smooth popup entrance animation */
+@keyframes popupEnter {
+  from {
+    opacity: 0;
+    transform: scale(0.92) translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Smooth popup exit animation */
+@keyframes popupExit {
+  from {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.92) translateY(16px);
+  }
+}
+
+/* Smooth overlay entrance */
+@keyframes overlayEnter {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Smooth overlay exit */
+@keyframes overlayExit {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
 /* Smooth interaction states */
 button, [role="button"], input, textarea, select {
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);

@@ -40,22 +40,22 @@ export default function Home() {
         />
       </div>
 
-      <div className="relative container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-12 max-h-screen overflow-y-auto">
+      <div className="relative container mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6 max-h-screen overflow-y-auto">
         {/* Mode Toggle */}
         <GameModeToggle />
 
         {/* Header */}
-        <div className="mb-8 sm:mb-12 text-center" style={{ animation: "smoothFadeIn 0.8s ease-out" }}>
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-3 tracking-tight" style={{ color: "var(--foreground)" }}>
+        <div className="mb-4 sm:mb-6 text-center" style={{ animation: "smoothFadeIn 0.8s ease-out" }}>
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-1 sm:mb-2 tracking-tight" style={{ color: "var(--foreground)" }}>
             ACRE
           </h1>
-          <p className="text-base sm:text-lg" style={{ color: "var(--text-muted)" }}>
+          <p className="text-xs sm:text-sm" style={{ color: "var(--text-muted)" }}>
             Transform your learning with interactive mastery challenges
           </p>
         </div>
 
         {/* Main Content */}
-        <div style={{ animation: "smoothScale 0.6s ease-out" }}>
+        <div style={{ animation: "popupEnter 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)" }}>
           {!battle_state ? (
             <BattleInput />
           ) : is_battle_active ? (

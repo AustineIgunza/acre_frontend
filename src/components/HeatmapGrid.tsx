@@ -81,9 +81,9 @@ export default function HeatmapGrid({ results, masteryScores = [], battleLog = [
   return (
     <div className="w-full">
       <h3 style={{
-        fontSize: "18px",
+        fontSize: "14px",
         fontWeight: "600",
-        marginBottom: "16px",
+        marginBottom: "8px",
         color: "var(--foreground)",
       }}>
         Performance Heatmap (Hover for Details)
@@ -92,8 +92,8 @@ export default function HeatmapGrid({ results, masteryScores = [], battleLog = [
       <div style={{
         display: "grid",
         gridTemplateColumns: "repeat(3, 1fr)",
-        gap: "12px",
-        marginBottom: "24px",
+        gap: "8px",
+        marginBottom: "12px",
         position: "relative",
       }}>
         {gridResults.slice(0, 9).map((result, index) => {
@@ -198,12 +198,12 @@ export default function HeatmapGrid({ results, masteryScores = [], battleLog = [
       {/* Legend */}
       <div style={{
         display: "grid",
-        gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))",
-        gap: "12px",
-        padding: "16px",
+        gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))",
+        gap: "8px",
+        padding: "10px",
         backgroundColor: "var(--surface)",
         borderRadius: "8px",
-        fontSize: "13px",
+        fontSize: "12px",
       }}>
         <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
@@ -264,16 +264,16 @@ export default function HeatmapGrid({ results, masteryScores = [], battleLog = [
 
       {/* Gradient Preview */}
       <div style={{
-        marginTop: "16px",
-        padding: "16px",
+        marginTop: "8px",
+        padding: "10px",
         backgroundColor: "var(--surface)",
         borderRadius: "8px",
-        fontSize: "12px",
+        fontSize: "11px",
         color: "var(--text-muted)",
       }}>
-        <div style={{ marginBottom: "8px", fontWeight: "600" }}>7-Band Color Gradient:</div>
+        <div style={{ marginBottom: "6px", fontWeight: "600", fontSize: "11px" }}>7-Band Gradient:</div>
         <div style={{
-          height: "40px",
+          height: "24px",
           borderRadius: "6px",
           background: "linear-gradient(90deg, hsl(38, 100%, 88%) 0%, hsl(38, 100%, 80%) 10%, hsl(32, 100%, 80%) 14%, hsl(32, 100%, 68%) 30%, hsl(24, 100%, 68%) 35%, hsl(24, 100%, 53%) 50%, hsl(10, 100%, 53%) 70%, hsl(4, 100%, 35%) 80%, hsl(0, 95%, 27%) 90%, hsl(0, 100%, 15%) 100%)",
           border: "1px solid rgba(0, 0, 0, 0.1)",
@@ -281,8 +281,8 @@ export default function HeatmapGrid({ results, masteryScores = [], battleLog = [
         <div style={{
           display: "flex",
           justifyContent: "space-between",
-          marginTop: "4px",
-          fontSize: "11px",
+          marginTop: "2px",
+          fontSize: "9px",
           fontWeight: "500",
         }}>
           <span>0%</span>
