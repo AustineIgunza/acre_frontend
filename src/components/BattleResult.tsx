@@ -18,13 +18,24 @@ export default function BattleResult({ onReset }: BattleResultProps) {
   // Save battle results to local storage
   useEffect(() => {
     if (battle_state) {
-      const results = battle_state.battle_log.map(log => log.was_correct ? "correct" : "wrong");
+      // Sample results and mastery scores showing varied colors
+      const sampleResults = ["wrong", "close", "close", "correct", "close", "correct", "correct", "correct", "correct"];
+      const sampleMasteryScores = [25, 42, 58, 65, 72, 82, 89, 95, 98];
+      
+      // Use sample data for first 9 questions, then use actual battle log for any beyond
+      const results = battle_state.battle_log.map((log, idx) => {
+        if (idx < sampleResults.length) return sampleResults[idx];
+        return log.was_correct ? "correct" : "wrong";
+      });
+      
       const masteryScores = battle_state.battle_log.map((log, idx) => {
+        if (idx < sampleMasteryScores.length) return sampleMasteryScores[idx];
         if (log.was_correct) return 85 + Math.random() * 15;
         if (log.damage_dealt > 10) return 50 + Math.random() * 16;
         return 20 + Math.random() * 13;
       });
-      saveHeatmapResults(results as ("correct" | "wrong" | "close")[], masteryScores.map(s => Math.round(s)));
+      
+      saveHeatmapResults(results as ("correct" | "wrong" | "close")[], masteryScores);
     }
   }, [battle_state]);
 
@@ -131,9 +142,14 @@ export default function BattleResult({ onReset }: BattleResultProps) {
         }}
       >
         <HeatmapGrid 
-          results={battle_state.battle_log.map(log => log.was_correct ? "correct" : "wrong")}
+          results={battle_state.battle_log.map((log, idx) => {
+            // Sample results matching mastery scores
+            const sampleResults = ["wrong", "close", "close", "correct", "close", "correct", "correct", "correct", "correct"];
+            if (idx < sampleResults.length) return sampleResults[idx] as ("correct" | "wrong" | "close");
+            return log.was_correct ? "correct" : "wrong";
+          })}
           masteryScores={battle_state.battle_log.map((log, idx) => {
-            // Sample data showing varied colors: Blue, Orange, and BRIGHT RED for boxes 7,8,9
+            // Sample mastery scores showing varied colors: Blue, Orange, and BRIGHT RED for boxes 7,8,9
             const sampleScores = [25, 42, 58, 65, 72, 82, 89, 95, 98];
             if (idx < sampleScores.length) return sampleScores[idx];
             // For questions beyond 9, calculate normally
