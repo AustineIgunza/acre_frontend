@@ -92,9 +92,10 @@ export default function HeatmapGrid({ results, masteryScores = [], battleLog = [
       <div style={{
         display: "grid",
         gridTemplateColumns: "repeat(3, 1fr)",
-        gap: "8px",
-        marginBottom: "12px",
+        gap: "6px",
+        marginBottom: "10px",
         position: "relative",
+        maxWidth: "180px",
       }}>
         {gridResults.slice(0, 9).map((result, index) => {
           const masteryScore = masteryScores[index] || (result === "correct" ? 90 : result === "close" ? 50 : 20);
@@ -142,28 +143,30 @@ export default function HeatmapGrid({ results, masteryScores = [], battleLog = [
             transform: "translate(-50%, -100%)",
             backgroundColor: "#1f2937",
             color: "white",
-            padding: "12px 16px",
-            borderRadius: "8px",
-            fontSize: "13px",
+            padding: "10px 12px",
+            borderRadius: "6px",
+            fontSize: "12px",
             fontWeight: "500",
-            maxWidth: "280px",
-            zIndex: 1000,
+            maxWidth: "260px",
+            minWidth: "240px",
+            zIndex: 10000,
             pointerEvents: "none",
             boxShadow: "0 10px 25px rgba(0, 0, 0, 0.3)",
             border: "1px solid rgba(255, 255, 255, 0.1)",
             lineHeight: "1.4",
+            animation: "popupEnter 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)"
           }}>
-            <div style={{ marginBottom: "8px" }}>
+            <div style={{ marginBottom: "6px" }}>
               <strong>Question {tooltip.cellIndex + 1}</strong>
             </div>
             
-            <div style={{ marginBottom: "8px", display: "flex", gap: "8px", alignItems: "center" }}>
+            <div style={{ marginBottom: "6px", display: "flex", gap: "6px", alignItems: "center" }}>
               <span style={{
-                fontSize: "16px",
+                fontSize: "14px",
               }}>
                 {results[tooltip.cellIndex] === "correct" ? "✓" : results[tooltip.cellIndex] === "close" ? "◐" : "✕"}
               </span>
-              <span>
+              <span style={{ fontSize: "11px" }}>
                 {results[tooltip.cellIndex] === "correct" 
                   ? "Correct" 
                   : results[tooltip.cellIndex] === "close" 
@@ -173,20 +176,20 @@ export default function HeatmapGrid({ results, masteryScores = [], battleLog = [
             </div>
 
             <div style={{
-              padding: "8px",
+              padding: "6px",
               backgroundColor: "rgba(255, 255, 255, 0.1)",
               borderRadius: "4px",
-              marginBottom: "8px",
-              fontSize: "12px",
+              marginBottom: "6px",
+              fontSize: "11px",
               fontStyle: "italic",
             }}>
               {battleLog[tooltip.cellIndex]?.feedback || "No feedback available"}
             </div>
 
             <div style={{
-              fontSize: "12px",
+              fontSize: "11px",
               color: "#9ca3af",
-              paddingTop: "8px",
+              paddingTop: "6px",
               borderTop: "1px solid rgba(255, 255, 255, 0.1)",
             }}>
               Mastery: <strong>{masteryScores[tooltip.cellIndex] || 50}%</strong>
@@ -198,83 +201,83 @@ export default function HeatmapGrid({ results, masteryScores = [], battleLog = [
       {/* Legend */}
       <div style={{
         display: "grid",
-        gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))",
-        gap: "8px",
-        padding: "10px",
+        gridTemplateColumns: "repeat(auto-fit, minmax(130px, 1fr))",
+        gap: "6px",
+        padding: "8px",
         backgroundColor: "var(--surface)",
-        borderRadius: "8px",
-        fontSize: "12px",
+        borderRadius: "6px",
+        fontSize: "11px",
       }}>
-        <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-            <div style={{ width: "24px", height: "24px", borderRadius: "4px", backgroundColor: getMasteryColor(5), border: "1px solid rgba(0, 0, 0, 0.2)" }} />
-            <span style={{ fontWeight: "600", fontSize: "12px" }}>Light Orange</span>
+        <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+            <div style={{ width: "18px", height: "18px", borderRadius: "3px", backgroundColor: getMasteryColor(5), border: "1px solid rgba(0, 0, 0, 0.2)" }} />
+            <span style={{ fontWeight: "600", fontSize: "10px" }}>Light Orange</span>
           </div>
-          <span style={{ fontSize: "11px", color: "var(--text-muted)", marginLeft: "32px" }}>0-10%</span>
+          <span style={{ fontSize: "9px", color: "var(--text-muted)", marginLeft: "24px" }}>0-10%</span>
         </div>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-            <div style={{ width: "24px", height: "24px", borderRadius: "4px", backgroundColor: getMasteryColor(20), border: "1px solid rgba(0, 0, 0, 0.2)" }} />
-            <span style={{ fontWeight: "600", fontSize: "12px" }}>Deep Orange</span>
+        <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+            <div style={{ width: "18px", height: "18px", borderRadius: "3px", backgroundColor: getMasteryColor(20), border: "1px solid rgba(0, 0, 0, 0.2)" }} />
+            <span style={{ fontWeight: "600", fontSize: "10px" }}>Deep Orange</span>
           </div>
-          <span style={{ fontSize: "11px", color: "var(--text-muted)", marginLeft: "32px" }}>10-30%</span>
+          <span style={{ fontSize: "9px", color: "var(--text-muted)", marginLeft: "24px" }}>10-30%</span>
         </div>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-            <div style={{ width: "24px", height: "24px", borderRadius: "4px", backgroundColor: getMasteryColor(40), border: "1px solid rgba(0, 0, 0, 0.2)" }} />
-            <span style={{ fontWeight: "600", fontSize: "12px" }}>Dark Orange</span>
+        <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+            <div style={{ width: "18px", height: "18px", borderRadius: "3px", backgroundColor: getMasteryColor(40), border: "1px solid rgba(0, 0, 0, 0.2)" }} />
+            <span style={{ fontWeight: "600", fontSize: "10px" }}>Dark Orange</span>
           </div>
-          <span style={{ fontSize: "11px", color: "var(--text-muted)", marginLeft: "32px" }}>30-50%</span>
+          <span style={{ fontSize: "9px", color: "var(--text-muted)", marginLeft: "24px" }}>30-50%</span>
         </div>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-            <div style={{ width: "24px", height: "24px", borderRadius: "4px", backgroundColor: getMasteryColor(60), border: "1px solid rgba(0, 0, 0, 0.2)" }} />
-            <span style={{ fontWeight: "600", fontSize: "12px" }}>Light Red</span>
+        <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+            <div style={{ width: "18px", height: "18px", borderRadius: "3px", backgroundColor: getMasteryColor(60), border: "1px solid rgba(0, 0, 0, 0.2)" }} />
+            <span style={{ fontWeight: "600", fontSize: "10px" }}>Light Red</span>
           </div>
-          <span style={{ fontSize: "11px", color: "var(--text-muted)", marginLeft: "32px" }}>50-70%</span>
+          <span style={{ fontSize: "9px", color: "var(--text-muted)", marginLeft: "24px" }}>50-70%</span>
         </div>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-            <div style={{ width: "24px", height: "24px", borderRadius: "4px", backgroundColor: getMasteryColor(75), border: "1px solid rgba(0, 0, 0, 0.2)" }} />
-            <span style={{ fontWeight: "600", fontSize: "12px" }}>Dark Red</span>
+        <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+            <div style={{ width: "18px", height: "18px", borderRadius: "3px", backgroundColor: getMasteryColor(75), border: "1px solid rgba(0, 0, 0, 0.2)" }} />
+            <span style={{ fontWeight: "600", fontSize: "10px" }}>Dark Red</span>
           </div>
-          <span style={{ fontSize: "11px", color: "var(--text-muted)", marginLeft: "32px" }}>70-80%</span>
+          <span style={{ fontSize: "9px", color: "var(--text-muted)", marginLeft: "24px" }}>70-80%</span>
         </div>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-            <div style={{ width: "24px", height: "24px", borderRadius: "4px", backgroundColor: getMasteryColor(85), border: "1px solid rgba(0, 0, 0, 0.2)" }} />
-            <span style={{ fontWeight: "600", fontSize: "12px" }}>Darker Red</span>
+        <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+            <div style={{ width: "18px", height: "18px", borderRadius: "3px", backgroundColor: getMasteryColor(85), border: "1px solid rgba(0, 0, 0, 0.2)" }} />
+            <span style={{ fontWeight: "600", fontSize: "10px" }}>Darker Red</span>
           </div>
-          <span style={{ fontSize: "11px", color: "var(--text-muted)", marginLeft: "32px" }}>80-90%</span>
+          <span style={{ fontSize: "9px", color: "var(--text-muted)", marginLeft: "24px" }}>80-90%</span>
         </div>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-            <div style={{ width: "24px", height: "24px", borderRadius: "4px", backgroundColor: getMasteryColor(95), border: "1px solid rgba(0, 0, 0, 0.2)" }} />
-            <span style={{ fontWeight: "600", fontSize: "12px" }}>Searing Red</span>
+        <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+            <div style={{ width: "18px", height: "18px", borderRadius: "3px", backgroundColor: getMasteryColor(95), border: "1px solid rgba(0, 0, 0, 0.2)" }} />
+            <span style={{ fontWeight: "600", fontSize: "10px" }}>Searing Red</span>
           </div>
-          <span style={{ fontSize: "11px", color: "var(--text-muted)", marginLeft: "32px" }}>90-100%</span>
+          <span style={{ fontSize: "9px", color: "var(--text-muted)", marginLeft: "24px" }}>90-100%</span>
         </div>
       </div>
 
       {/* Gradient Preview */}
       <div style={{
-        marginTop: "8px",
-        padding: "10px",
+        marginTop: "6px",
+        padding: "8px",
         backgroundColor: "var(--surface)",
-        borderRadius: "8px",
-        fontSize: "11px",
+        borderRadius: "6px",
+        fontSize: "10px",
         color: "var(--text-muted)",
       }}>
-        <div style={{ marginBottom: "6px", fontWeight: "600", fontSize: "11px" }}>7-Band Gradient:</div>
+        <div style={{ marginBottom: "4px", fontWeight: "600", fontSize: "10px" }}>Gradient:</div>
         <div style={{
-          height: "24px",
-          borderRadius: "6px",
+          height: "20px",
+          borderRadius: "4px",
           background: "linear-gradient(90deg, hsl(38, 100%, 88%) 0%, hsl(38, 100%, 80%) 10%, hsl(32, 100%, 80%) 14%, hsl(32, 100%, 68%) 30%, hsl(24, 100%, 68%) 35%, hsl(24, 100%, 53%) 50%, hsl(10, 100%, 53%) 70%, hsl(4, 100%, 35%) 80%, hsl(0, 95%, 27%) 90%, hsl(0, 100%, 15%) 100%)",
           border: "1px solid rgba(0, 0, 0, 0.1)",
         }} />
@@ -282,15 +285,13 @@ export default function HeatmapGrid({ results, masteryScores = [], battleLog = [
           display: "flex",
           justifyContent: "space-between",
           marginTop: "2px",
-          fontSize: "9px",
+          fontSize: "8px",
           fontWeight: "500",
         }}>
           <span>0%</span>
-          <span>10%</span>
-          <span>30%</span>
+          <span>25%</span>
           <span>50%</span>
-          <span>70%</span>
-          <span>90%</span>
+          <span>75%</span>
           <span>100%</span>
         </div>
       </div>
