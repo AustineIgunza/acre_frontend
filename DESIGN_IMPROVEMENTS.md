@@ -1,7 +1,7 @@
-# Design Improvements - Learn Forge Frontend
+# Design Improvements - ACRE Frontend
 
 ## Overview
-Transformed the Learn Forge frontend with softer colors, smooth Apple-like animations, responsive layouts, and interactive elements that all fit on a single webpage without scrolling.
+Transformed the ACRE frontend with softer colors, smooth Apple-like animations, responsive layouts, and interactive elements that all fit on a single webpage without scrolling.
 
 ## Key Improvements
 
@@ -102,7 +102,7 @@ Enhanced interactivity across all components:
 ### page.tsx
 - Softer background colors with CSS variables
 - Subtle floating background elements (opacity 10% instead of 20-30%)
-- "Learn Forge" instead of "ACRE" as main heading
+- "ACRE" instead of "Learn Forge" as main heading
 - Responsive padding (py-6 sm:py-12)
 - Main content wrapped with smooth animation
 
