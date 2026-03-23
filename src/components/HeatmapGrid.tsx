@@ -44,9 +44,9 @@ export function getMasteryColor(score: number): string {
     const intensity = (score - 80) / 10;
     return `hsl(0, 100%, ${32 - intensity * 8}%)`;
   } else {
-    // Bright Searing Red (90-100) - Most intense, brightest red
+    // Bright Searing Red (90-100) - BRIGHT RED!
     const intensity = (score - 90) / 10;
-    return `hsl(0, 100%, ${24 - intensity * 18}%)`;
+    return `hsl(0, 100%, ${60 - intensity * 20}%)`;
   }
 }
 

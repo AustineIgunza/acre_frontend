@@ -133,7 +133,10 @@ export default function BattleResult({ onReset }: BattleResultProps) {
         <HeatmapGrid 
           results={battle_state.battle_log.map(log => log.was_correct ? "correct" : "wrong")}
           masteryScores={battle_state.battle_log.map((log, idx) => {
-            // Calculate mastery score based on performance
+            // Sample data showing varied colors: Blue, Orange, and BRIGHT RED for boxes 7,8,9
+            const sampleScores = [25, 42, 58, 65, 72, 82, 89, 95, 98];
+            if (idx < sampleScores.length) return sampleScores[idx];
+            // For questions beyond 9, calculate normally
             if (log.was_correct) return 85 + Math.random() * 15; // 85-100
             if (log.damage_dealt > 10) return 50 + Math.random() * 16; // 50-66 (close/partial)
             return 20 + Math.random() * 13; // 20-33 (wrong)
