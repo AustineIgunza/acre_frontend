@@ -1,6 +1,8 @@
 "use client";
 
+import { useEffect } from "react";
 import { useCombatStore } from "@/store/combatStore";
+import { saveHeatmapResults } from "@/utils/localStorage";
 import HeatmapGrid from "./HeatmapGrid";
 import SaveProgress from "./SaveProgress";
 
@@ -10,6 +12,19 @@ interface BattleResultProps {
 
 export default function BattleResult({ onReset }: BattleResultProps) {
   const { battle_state } = useCombatStore();
+
+  // Save battle results to local storage
+  useEffect(() => {
+    if (battle_state) {
+      const results = battle_state.battle_log.map(log => log.was_correct ? "correct" : "wrong");
+      const masteryScores = battle_state.battle_log.map((log, idx) => {
+        if (log.was_correct) return 85 + Math.random() * 15;
+        if (log.damage_dealt > 10) return 50 + Math.random() * 16;
+        return 20 + Math.random() * 13;
+      });
+      saveHeatmapResults(results as ("correct" | "wrong" | "close")[], masteryScores.map(s => Math.round(s)));
+    }
+  }, [battle_state]);
 
   if (!battle_state) return null;
 
