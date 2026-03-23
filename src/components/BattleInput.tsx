@@ -33,10 +33,10 @@ export default function BattleInput() {
         {/* Header */}
         <div className="px-6 sm:px-8 pt-6 sm:pt-8 pb-4 sm:pb-6 border-b" style={{ borderColor: "var(--border)" }}>
           <h2 className="text-2xl sm:text-3xl font-bold mb-2" style={{ color: "var(--foreground)" }}>
-            Begin Your Journey
+            Begin Your Challenge
           </h2>
           <p className="text-sm sm:text-base" style={{ color: "var(--text-muted)" }}>
-            Paste your study notes to forge a personalized learning challenge
+            Paste your study notes to activate ACRE's adaptive learning engine
           </p>
         </div>
 

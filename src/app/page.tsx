@@ -43,7 +43,7 @@ export default function Home() {
         {/* Header */}
         <div className="mb-8 sm:mb-12 text-center" style={{ animation: "smoothFadeIn 0.8s ease-out" }}>
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-3 tracking-tight" style={{ color: "var(--foreground)" }}>
-            Learn Forge
+            ACRE
           </h1>
           <p className="text-base sm:text-lg" style={{ color: "var(--text-muted)" }}>
             Transform your learning with interactive mastery challenges
