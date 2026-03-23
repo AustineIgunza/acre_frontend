@@ -19,7 +19,7 @@ export default function InputPhase() {
       return;
     }
 
-    await startGame(sourceContent, sourceTitle || "Learning Session");
+    await startGame({ text: sourceContent }, sourceTitle || "Learning Session");
   };
 
   return (
