@@ -20,6 +20,7 @@ export default function EncounterCard({
     isCorrect: boolean;
   } | null>(null);
   const [selectedChoice, setSelectedChoice] = useState<"A" | "B" | "C" | "D" | null>(null);
+  const [hoveredOption, setHoveredOption] = useState<"A" | "B" | "C" | "D" | null>(null);
   const { submitAnswer } = useCombatStore();
 
   const handleChoice = async (choice: "A" | "B" | "C" | "D") => {
@@ -46,11 +47,13 @@ export default function EncounterCard({
 
   return (
     <div 
-      className="rounded-2xl border shadow-lg backdrop-blur overflow-hidden"
+      className="rounded-2xl border shadow-lg backdrop-blur overflow-visible"
       style={{
         backgroundColor: "var(--surface)",
         borderColor: "var(--border)",
-        animation: "popupEnter 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)"
+        animation: "popupEnter 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)",
+        position: "relative",
+        zIndex: 1
       }}
     >
       {/* Scenario */}
@@ -64,52 +67,79 @@ export default function EncounterCard({
       </div>
 
       {/* Options */}
-      <div className="px-4 sm:px-5 py-4 sm:py-5">
+      <div className="px-4 sm:px-5 py-4 sm:py-5" style={{ position: "relative" }}>
         <p className="text-xs font-semibold mb-3" style={{ color: "var(--text-muted)" }}>
           Select your answer:
         </p>
-        <div className="space-y-2 mb-4">
+        <div className="space-y-2 mb-4" style={{ position: "relative" }}>
           {options.map(({ key, label }, index) => (
-            <button
-              key={key}
-              onClick={() => handleChoice(key)}
-              disabled={is_loading || !!selectedChoice}
-              className="w-full p-2 sm:p-3 text-left rounded-xl border-2 transition-all"
-              style={{
-                backgroundColor: selectedChoice === key 
-                  ? toastData?.isCorrect 
-                    ? "var(--success-soft)" 
-                    : "var(--error-soft)"
-                  : "var(--surface-alt)",
-                borderColor: selectedChoice === key 
-                  ? toastData?.isCorrect 
-                    ? "var(--success)" 
-                    : "var(--error)"
-                  : "var(--border)",
-                color: selectedChoice === key 
-                  ? toastData?.isCorrect 
-                    ? "var(--success)" 
-                    : "var(--error)"
-                  : "var(--text-secondary)",
-                cursor: is_loading || !!selectedChoice ? "not-allowed" : "pointer",
-                opacity: is_loading || !!selectedChoice ? 0.6 : 1,
-                animation: `slideInFromLeft ${0.3 + index * 0.08}s cubic-bezier(0.34, 1.56, 0.64, 1)`,
-                transform: "translateZ(0)"
-              }}
-              onMouseEnter={(e) => {
-                if (!is_loading && !selectedChoice) {
-                  e.currentTarget.style.borderColor = "var(--primary)";
-                  e.currentTarget.style.transform = "translateY(-2px)";
-                }
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = "var(--border)";
-                e.currentTarget.style.transform = "translateY(0)";
-              }}
-            >
-              <span className="font-bold mr-2">{key}.</span>
-              <span className="text-xs sm:text-sm">{label}</span>
-            </button>
+            <div key={key} style={{ position: "relative" }}>
+              <button
+                onClick={() => handleChoice(key)}
+                disabled={is_loading || !!selectedChoice}
+                className="w-full p-2 sm:p-3 text-left rounded-xl border-2 transition-all"
+                style={{
+                  backgroundColor: selectedChoice === key 
+                    ? toastData?.isCorrect 
+                      ? "var(--success-soft)" 
+                      : "var(--error-soft)"
+                    : "var(--surface-alt)",
+                  borderColor: selectedChoice === key 
+                    ? toastData?.isCorrect 
+                      ? "var(--success)" 
+                      : "var(--error)"
+                    : hoveredOption === key
+                    ? "var(--primary)"
+                    : "var(--border)",
+                  color: selectedChoice === key 
+                    ? toastData?.isCorrect 
+                      ? "var(--success)" 
+                      : "var(--error)"
+                    : "var(--text-secondary)",
+                  cursor: is_loading || !!selectedChoice ? "not-allowed" : "pointer",
+                  opacity: is_loading || !!selectedChoice ? 0.6 : 1,
+                  animation: `slideInFromLeft ${0.3 + index * 0.08}s cubic-bezier(0.34, 1.56, 0.64, 1)`,
+                  transform: hoveredOption === key && !is_loading && !selectedChoice 
+                    ? "translateY(-2px)" 
+                    : "translateY(0)",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap"
+                }}
+                onMouseEnter={() => !is_loading && !selectedChoice && setHoveredOption(key)}
+                onMouseLeave={() => setHoveredOption(null)}
+                onTouchStart={() => !is_loading && !selectedChoice && setHoveredOption(key)}
+                onTouchEnd={() => setHoveredOption(null)}
+              >
+                <span className="font-bold mr-2">{key}.</span>
+                <span className="text-xs sm:text-sm">{label}</span>
+              </button>
+
+              {/* Hover Tooltip - Shows full text on smaller screens */}
+              {hoveredOption === key && !is_loading && !selectedChoice && (
+                <div
+                  style={{
+                    position: "fixed",
+                    backgroundColor: "var(--surface)",
+                    border: "2px solid var(--primary)",
+                    borderRadius: "12px",
+                    padding: "12px",
+                    maxWidth: "min(300px, 90vw)",
+                    zIndex: 10001,
+                    boxShadow: "0 8px 24px rgba(0,0,0,0.15)",
+                    animation: "popupEnter 0.2s cubic-bezier(0.34, 1.56, 0.64, 1)",
+                    pointerEvents: "none",
+                    top: "20px",
+                    right: "20px",
+                  }}
+                >
+                  <p className="text-xs sm:text-sm" style={{ color: "var(--text-secondary)" }}>
+                    <span className="font-bold" style={{ color: "var(--primary)" }}>{key}. </span>
+                    {label}
+                  </p>
+                </div>
+              )}
+            </div>
           ))}
         </div>
 
