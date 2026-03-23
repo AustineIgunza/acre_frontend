@@ -105,28 +105,28 @@ export default function CrisisModal({ scenario }: CrisisModalProps) {
       {/* Mini Loading Overlay during evaluation */}
       {isEvaluating && <MiniLoadingOverlay />}
 
-      <div className="min-h-screen-gradient bg-gradient-blue-white text-slate-900 px-4 sm:px-6 lg:px-8 py-6 sm:py-10 lg:py-12 flex flex-col items-center justify-start relative overflow-hidden">
-        {/* Animated background elements */}
-        <div className="absolute top-40 left-10 w-80 h-80 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-15 animate-float animate-float"></div>
-        <div className="absolute bottom-20 right-10 w-80 h-80 bg-blue-300 rounded-full mix-blend-multiply filter blur-3xl opacity-15 animate-float-slow animation-delay-2000"></div>
+      <div className="min-h-screen bg-gradient-blue-white text-slate-900 px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 md:py-8 flex flex-col items-center justify-start relative overflow-x-hidden">
+        {/* Animated background elements - hidden on very small screens */}
+        <div className="hidden sm:block absolute top-40 left-10 w-80 h-80 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-15 animate-float animate-float"></div>
+        <div className="hidden sm:block absolute bottom-20 right-10 w-80 h-80 bg-blue-300 rounded-full mix-blend-multiply filter blur-3xl opacity-15 animate-float-slow animation-delay-2000"></div>
         
         {/* Content Container - Fully Centered and Scrollable */}
-        <div className="w-full max-w-2xl flex flex-col items-center justify-center gap-6 sm:gap-8 relative z-10">
+        <div className="w-full max-w-2xl flex flex-col items-center justify-center gap-4 sm:gap-6 md:gap-8 relative z-10">
           {/* Crisis Section - Centered */}
           <div className="w-full text-center animate-slideDown">
             {/* Crisis Heading */}
-            <div className="mb-4 sm:mb-6">
-              <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black mb-2 sm:mb-3 bg-gradient-to-r from-blue-600 to-blue-500 bg-clip-text text-transparent animate-float">
+            <div className="mb-3 sm:mb-4 md:mb-6">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-1 sm:mb-2 bg-gradient-to-r from-blue-600 to-blue-500 bg-clip-text text-transparent animate-float">
                 CRISIS
               </h2>
-              <p className="text-base sm:text-lg lg:text-xl font-medium text-slate-600">
+              <p className="text-xs sm:text-base md:text-lg lg:text-xl font-medium text-slate-600">
                 Make your critical decision
               </p>
             </div>
 
             {/* Crisis Text Box - Premium styling */}
-            <div className="text-center mb-6 sm:mb-8 animate-slideUp">
-              <p className="text-base sm:text-lg lg:text-xl font-semibold leading-snug sm:leading-relaxed text-slate-800 bg-white/80 backdrop-blur-lg border-1.5 border-blue-200 rounded-3xl p-5 sm:p-7 lg:p-8 shadow-sm hover:shadow-md hover:border-blue-300 transition-all duration-300 break-words">
+            <div className="text-center mb-4 sm:mb-6 md:mb-8 animate-slideUp">
+              <p className="text-xs sm:text-base md:text-lg lg:text-xl font-semibold leading-tight sm:leading-snug md:leading-relaxed text-slate-800 bg-white/80 backdrop-blur-lg border-1.5 border-blue-200 rounded-2xl sm:rounded-3xl p-3 sm:p-4 md:p-6 lg:p-8 shadow-sm hover:shadow-md hover:border-blue-300 transition-all duration-300 break-words w-full">
                 {scenario.crisisText}
               </p>
             </div>
@@ -135,8 +135,8 @@ export default function CrisisModal({ scenario }: CrisisModalProps) {
             {scenario.questionType === "multiple-choice" &&
               scenario.actionButtons &&
               !showDefenseTextbox && (
-              <div className="w-full space-y-2 sm:space-y-3">
-                <p className="text-xs sm:text-sm font-bold text-slate-600 uppercase tracking-widest text-center mb-3 sm:mb-4">
+              <div className="w-full space-y-1.5 sm:space-y-2 md:space-y-3">
+                <p className="text-xs font-bold text-slate-600 uppercase tracking-wide text-center mb-2 sm:mb-3">
                   Select Your Response:
                 </p>
                 {scenario.actionButtons.map((button, idx) => (
@@ -144,16 +144,17 @@ export default function CrisisModal({ scenario }: CrisisModalProps) {
                     key={button.id}
                     onClick={() => handleActionClick(button.id)}
                     disabled={isLoading}
-                    className={`action-button w-full transition-all duration-300 animate-slideUp ${
-                      selectedActionButton === button.id ? "selected ring-2 ring-blue-500 scale-105" : "hover:scale-102"
-                    } ${isLoading ? "opacity-50 cursor-not-allowed" : "hover:shadow-lg"}`}
-                    style={{ animationDelay: `${idx * 0.1}s` }}
+                    className={`w-full transition-all duration-300 animate-slideUp py-2 sm:py-3 md:py-4 px-2 sm:px-3 md:px-4 font-semibold text-xs sm:text-sm md:text-base text-left border-1.5 border-slate-200 rounded-xl sm:rounded-2xl bg-white hover:bg-blue-50 ${
+                      selectedActionButton === button.id ? "selected ring-2 ring-blue-500 scale-105 bg-blue-100" : ""
+                    } ${isLoading ? "opacity-50 cursor-not-allowed" : "hover:shadow-md"}`}
+                    style={{ animationDelay: `${idx * 0.1}s`, minHeight: "auto" }}
                   >
-                    <span className="action-button-index text-base sm:text-lg font-bold">
-                      {String.fromCharCode(65 + (button.order - 1))}
-                    </span>
-                    <span className="action-button-label flex-1 text-left text-sm sm:text-base break-words">{button.label}</span>
-                    <span className="text-xs text-slate-500 hidden sm:inline">Click to select</span>
+                    <div className="flex items-center gap-2">
+                      <span className="flex items-center justify-center w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 bg-blue-100 text-blue-700 rounded-lg font-bold text-xs sm:text-sm flex-shrink-0">
+                        {String.fromCharCode(65 + (button.order - 1))}
+                      </span>
+                      <span className="flex-1 text-left break-words">{button.label}</span>
+                    </div>
                   </button>
                 ))}
               </div>
@@ -162,38 +163,37 @@ export default function CrisisModal({ scenario }: CrisisModalProps) {
 
           {/* Defense Textbox - Inline, not fixed position */}
           {showDefenseTextbox && !defenseSubmitted && (
-            <div className="defense-box-inline w-full animate-slideDown">
-              <form onSubmit={handleDefenseSubmit} className="flex flex-col gap-3 sm:gap-4">
-                <label className="defense-label text-center text-base sm:text-lg font-bold text-slate-900">
-                  Defend Your Logic {testMode && <span className="text-xs bg-yellow-200 px-2 py-1 rounded ml-2">TEST MODE</span>}
+            <div className="defense-box-inline w-full animate-slideDown px-0">
+              <form onSubmit={handleDefenseSubmit} className="flex flex-col gap-2 sm:gap-3">
+                <label className="text-center text-xs sm:text-sm md:text-base font-bold text-slate-900 px-2">
+                  Defend Your Logic {testMode && <span className="text-xs bg-yellow-200 px-2 py-1 rounded ml-2 inline-block">TEST</span>}
                 </label>
                 <textarea
                   ref={textareaRef}
                   value={defenseText}
                   onChange={(e) => setDefenseText(e.target.value)}
-                  placeholder={testMode ? "TEST MODE: Type anything or leave blank (will auto-pass)..." : "Explain your reasoning... (min 20 chars)"}
-                  className="defense-textarea w-full p-3 sm:p-4 border-1.5 border-blue-200 rounded-xl text-slate-800 bg-blue-50/60 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-blue-50 transition-all duration-250"
+                  placeholder={testMode ? "TEST: Leave blank or type anything..." : "Explain your reasoning..."}
+                  className="w-full p-2 sm:p-3 border-1.5 border-blue-200 rounded-lg text-xs sm:text-sm text-slate-800 bg-blue-50/60 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-blue-50 transition-all duration-250 resize-none"
+                  style={{ minHeight: "80px", maxHeight: "120px" }}
                   disabled={isLoading || isEvaluating}
                   autoFocus
                 />
-                <div className="text-center text-xs sm:text-sm text-slate-500 font-medium">
-                  {defenseText.length} / {testMode ? "optional" : "20"} characters {!testMode && "minimum"}
+                <div className="text-center text-xs text-slate-500 font-medium px-2">
+                  {defenseText.length} / {testMode ? "optional" : "20"} chars
                 </div>
                 <button
                   type="submit"
                   disabled={isLoading || (!testMode && defenseText.trim().length < 20) || isEvaluating}
-                  className="button-primary w-full py-3 sm:py-4 px-4 sm:px-6 font-bold text-sm sm:text-base rounded-xl hover:shadow-lg active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-250"
+                  className="button-primary w-full py-2 sm:py-3 px-3 sm:px-4 font-bold text-xs sm:text-sm rounded-lg hover:shadow-lg active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-250 mx-0"
                 >
-                  {isEvaluating ? "Evaluating..." : testMode ? "Submit (TEST MODE)" : "Submit Defense"}
+                  {isEvaluating ? "Evaluating..." : testMode ? "Submit" : "Submit"}
                 </button>
               </form>
             </div>
           )}
 
-          {/* Feedback is now in modal - removed inline display */}
-
           {/* Spacer to allow scrolling room */}
-          <div className="h-4 sm:h-8" />
+          <div className="h-2 sm:h-4" />
         </div>
       </div>
 

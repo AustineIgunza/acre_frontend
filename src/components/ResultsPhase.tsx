@@ -35,37 +35,37 @@ Who can beat this? #ARCÉ #Mastery`;
   };
 
   return (
-    <div className="min-h-screen-gradient bg-gradient-blue-white text-slate-900 px-4 sm:px-6 lg:px-8 py-6 sm:py-12 flex flex-col items-center justify-center relative overflow-hidden">
-      {/* Animated background elements */}
-      <div className="absolute top-40 left-5 w-72 h-72 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-15 animate-float"></div>
-      <div className="absolute bottom-20 right-5 w-72 h-72 bg-blue-300 rounded-full mix-blend-multiply filter blur-3xl opacity-15 animate-float-slow animation-delay-2000"></div>
+    <div className="min-h-screen bg-gradient-blue-white text-slate-900 px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-8 md:py-12 flex flex-col items-center justify-center relative overflow-x-hidden">
+      {/* Animated background elements - hidden on mobile */}
+      <div className="hidden sm:block absolute top-40 left-5 w-72 h-72 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-15 animate-float pointer-events-none"></div>
+      <div className="hidden sm:block absolute bottom-20 right-5 w-72 h-72 bg-blue-300 rounded-full mix-blend-multiply filter blur-3xl opacity-15 animate-float-slow animation-delay-2000 pointer-events-none"></div>
       
       {/* Header Section */}
-      <div className="mb-8 sm:mb-12 text-center animate-fadeIn relative z-10 max-w-3xl">
-        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black mb-3 sm:mb-4 tracking-tight bg-gradient-to-r from-blue-600 to-blue-500 bg-clip-text text-transparent animate-float">
+      <div className="mb-6 sm:mb-8 md:mb-12 text-center animate-fadeIn relative z-10 max-w-3xl px-2">
+        <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-2 sm:mb-3 md:mb-4 tracking-tight bg-gradient-to-r from-blue-600 to-blue-500 bg-clip-text text-transparent animate-float">
           ARCÉ
         </h1>
-        <h2 className="text-2xl sm:text-4xl font-black mb-2 sm:mb-3 bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
-          {session.globalHeat >= 80 ? "IGNITION ACHIEVED!" : "Session Complete"}
+        <h2 className="text-xl sm:text-2xl md:text-4xl font-black mb-1 sm:mb-2 md:mb-3 bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
+          {session.globalHeat >= 80 ? "IGNITION!" : "Complete"}
         </h2>
-        <p className="text-base sm:text-lg font-medium text-slate-600 break-words">
+        <p className="text-xs sm:text-base md:text-lg font-medium text-slate-600 break-words text-center">
           {session.sourceTitle}
         </p>
       </div>
 
       {/* Results Container */}
-      <div className="max-w-3xl w-full bg-white/90 backdrop-blur-lg border-1.5 border-blue-200 rounded-3xl p-5 sm:p-7 lg:p-10 shadow-sm hover:shadow-md transition-all duration-300 relative z-10 animate-scaleIn">
+      <div className="max-w-3xl w-full bg-white/90 backdrop-blur-lg border-1.5 border-blue-200 rounded-2xl sm:rounded-3xl p-3 sm:p-5 md:p-7 lg:p-10 shadow-sm hover:shadow-md transition-all duration-300 relative z-10 animate-scaleIn mt-4 sm:mt-6">
         {/* Stats Grid - Premium Card Design */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-8 sm:mb-10">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3 md:gap-4 mb-6 sm:mb-8 md:mb-10">
           {/* Final Heat */}
-          <div className="bg-gradient-to-br from-orange-50 to-red-50 border-1.5 border-orange-200 rounded-2xl p-3 sm:p-5 text-center group hover:scale-105 hover:shadow-lg transition-all duration-300 cursor-pointer animate-slideUp">
-            <div className="text-xs font-bold text-orange-600 uppercase tracking-widest mb-1 sm:mb-2">
-              Final Heat
+          <div className="bg-gradient-to-br from-orange-50 to-red-50 border-1.5 border-orange-200 rounded-lg sm:rounded-2xl p-2 sm:p-4 md:p-5 text-center group hover:scale-105 hover:shadow-lg transition-all duration-300 cursor-pointer animate-slideUp">
+            <div className="text-xs font-bold text-orange-600 uppercase tracking-tight mb-1">
+              Heat
             </div>
-            <div className="text-3xl sm:text-4xl font-black text-slate-900 mb-2">
+            <div className="text-2xl sm:text-3xl md:text-4xl font-black text-slate-900 mb-1 sm:mb-2">
               {session.globalHeat}%
             </div>
-            <div className="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden">
+            <div className="w-full h-1 sm:h-1.5 bg-slate-200 rounded-full overflow-hidden">
               <div
                 className="h-full bg-gradient-to-r from-orange-400 to-red-500 transition-all duration-700"
                 style={{ width: `${session.globalHeat}%` }}
@@ -74,8 +74,8 @@ Who can beat this? #ARCÉ #Mastery`;
           </div>
 
           {/* Integrity */}
-          <div className="bg-gradient-to-br from-emerald-50 to-green-50 border-1.5 border-emerald-200 rounded-2xl p-3 sm:p-5 text-center group hover:scale-105 hover:shadow-lg transition-all duration-300 cursor-pointer animate-slideUp" style={{ animationDelay: "0.1s" }}>
-            <div className="text-xs font-bold text-emerald-600 uppercase tracking-widest mb-1 sm:mb-2">
+          <div className="bg-gradient-to-br from-emerald-50 to-green-50 border-1.5 border-emerald-200 rounded-lg sm:rounded-2xl p-2 sm:p-4 md:p-5 text-center group hover:scale-105 hover:shadow-lg transition-all duration-300 cursor-pointer animate-slideUp" style={{ animationDelay: "0.1s" }}>
+            <div className="text-xs font-bold text-emerald-600 uppercase tracking-tight mb-1">
               Integrity
             </div>
             <div className="text-3xl sm:text-4xl font-black text-slate-900 mb-2">
